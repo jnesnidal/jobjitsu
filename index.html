@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Create a truthful, ATS-friendly resume tailored to a pasted job description."
+    />
+    <title>MatchCraft Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="MatchCraft home">
+        <span class="brand-mark">M</span>
+        <span>MatchCraft</span>
+      </a>
+      <div class="header-note">
+        <span class="status-dot"></span>
+        Local-first resume tailoring
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">ATS RESUME WORKBENCH / 01</div>
+        <h1>Match the role.<br /><em>Keep the truth.</em></h1>
+        <p>
+          Turn a job posting into a focused, recruiter-ready resume. MatchCraft
+          surfaces relevant experience and exact terminology without fabricating
+          qualifications.
+        </p>
+        <div class="hero-proof" aria-label="Product principles">
+          <span>01 Keyword alignment</span>
+          <span>02 Evidence-first writing</span>
+          <span>03 ATS-safe format</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Resume tailoring workspace">
+        <aside class="input-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="step-number">STEP 01</span>
+              <h2>Define the target</h2>
+            </div>
+            <button id="loadExample" class="text-button" type="button">
+              Load example
+            </button>
+          </div>
+
+          <div class="mode-selector" role="radiogroup" aria-label="Tailoring mode">
+            <button
+              class="mode-option active"
+              id="localMode"
+              type="button"
+              role="radio"
+              aria-checked="true"
+            >
+              <strong>Local</strong>
+              <span>Fast, private rules</span>
+            </button>
+            <button
+              class="mode-option"
+              id="geminiMode"
+              type="button"
+              role="radio"
+              aria-checked="false"
+            >
+              <strong>Gemini AI</strong>
+              <span>Semantic scan + rewording</span>
+            </button>
+          </div>
+
+          <div class="gemini-settings" id="geminiSettings" hidden>
+            <div class="gemini-heading">
+              <span>Gemini 3.5 Flash with automatic fallback</span>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Get API key
+              </a>
+            </div>
+            <label for="geminiApiKey">Gemini API key</label>
+            <div class="api-key-row">
+              <input
+                id="geminiApiKey"
+                type="password"
+                placeholder="Paste your API key"
+                autocomplete="off"
+              />
+              <button id="toggleApiKey" class="key-toggle" type="button">
+                Show
+              </button>
+            </div>
+            <p>
+              Used for this tab only and sent directly to Google. Do not use
+              client-side keys in a publicly deployed app.
+            </p>
+          </div>
+
+          <label for="targetTitle">Target job title</label>
+          <input
+            id="targetTitle"
+            type="text"
+            placeholder="e.g. Full Stack Software Engineer"
+            autocomplete="off"
+          />
+
+          <div class="label-row">
+            <label for="jobDescription">Job description</label>
+            <span id="wordCount">0 words</span>
+          </div>
+          <textarea
+            id="jobDescription"
+            placeholder="Paste the complete job description here. Include responsibilities, requirements, and preferred qualifications for the strongest analysis."
+          ></textarea>
+
+          <div class="privacy-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+              />
+            </svg>
+            <span id="privacyText">Local mode keeps resume data in this browser.</span>
+          </div>
+
+          <button id="generateButton" class="primary-button" type="button">
+            <span id="generateButtonLabel">Generate tailored resume</span>
+            <span aria-hidden="true">↗</span>
+          </button>
+          <p id="inputError" class="input-error" role="alert"></p>
+        </aside>
+
+        <section class="results-panel" id="resultsPanel">
+          <div class="empty-state" id="emptyState">
+            <div class="scanner">
+              <div class="scanner-line"></div>
+              <span>ATS</span>
+            </div>
+            <h2>Your match analysis appears here</h2>
+            <p>Paste a job description to identify keywords, rank your experience, and create an ATS-safe resume.</p>
+          </div>
+
+          <div class="results-content" id="resultsContent" hidden>
+            <div class="results-topbar">
+              <div>
+                <span class="step-number">STEP 02</span>
+                <h2>Match report</h2>
+              </div>
+              <span class="generated-badge" id="generatedBadge">Generated locally</span>
+            </div>
+
+            <div class="score-card">
+              <div class="score-ring" id="scoreRing">
+                <div>
+                  <strong id="scoreValue">0</strong>
+                  <span>/ 100</span>
+                </div>
+              </div>
+              <div class="score-copy">
+                <span id="scoreLabel" class="score-label">Strong match</span>
+                <h3>Estimated ATS alignment</h3>
+                <p id="scoreSummary"></p>
+              </div>
+            </div>
+
+            <div class="metric-grid" id="metricGrid"></div>
+
+            <div class="keyword-section">
+              <div class="section-title-row">
+                <h3>Keyword coverage</h3>
+                <span id="coverageCount"></span>
+              </div>
+              <div class="keyword-group">
+                <span class="keyword-label matched">Matched</span>
+                <div class="keyword-list" id="matchedKeywords"></div>
+              </div>
+              <div class="keyword-group">
+                <span class="keyword-label missing">Verify before adding</span>
+                <div class="keyword-list" id="missingKeywords"></div>
+              </div>
+              <p class="truth-note">
+                Missing terms are not inserted automatically. Add them only when
+                they accurately describe your experience.
+              </p>
+            </div>
+
+            <div class="keyword-database-prompt" id="keywordDatabasePrompt" hidden>
+              <div class="database-prompt-heading">
+                <div>
+                  <span class="keyword-label database">Teach MatchCraft</span>
+                  <h3>Add keywords to the database?</h3>
+                </div>
+                <button
+                  id="dismissKeywordPrompt"
+                  class="dismiss-button"
+                  type="button"
+                  aria-label="Dismiss keyword suggestions"
+                >
+                  &times;
+                </button>
+              </div>
+              <p>
+                These terms are not in the current keyword database. Select the
+                meaningful skills or tools you want MatchCraft to recognize in
+                future job descriptions.
+              </p>
+              <div
+                class="keyword-suggestions"
+                id="keywordSuggestions"
+                aria-label="Suggested keywords"
+              ></div>
+              <label class="custom-keyword-label" for="customKeyword">
+                Add a different keyword
+              </label>
+              <div class="custom-keyword-row">
+                <input
+                  id="customKeyword"
+                  type="text"
+                  placeholder="e.g. Kubernetes, Azure"
+                  autocomplete="off"
+                />
+                <button id="saveKeywords" class="database-button" type="button">
+                  Add selected
+                </button>
+              </div>
+              <p class="database-note">
+                Saved only in this browser. Adding a term does not claim it as a
+                resume skill.
+              </p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="resume-section" id="resumeSection" hidden>
+        <div class="resume-toolbar">
+          <div>
+            <span class="step-number">STEP 03</span>
+            <h2>Review the tailored resume</h2>
+            <p>Every line remains editable before export.</p>
+          </div>
+          <div class="toolbar-actions">
+            <button id="copyButton" class="secondary-button" type="button">
+              Copy text
+            </button>
+            <button id="downloadButton" class="secondary-button" type="button">
+              Download .txt
+            </button>
+            <button id="printButton" class="primary-button compact" type="button">
+              Print / Save PDF
+            </button>
+          </div>
+        </div>
+        <article
+          id="resumePreview"
+          class="resume-paper"
+          contenteditable="true"
+          spellcheck="true"
+          aria-label="Editable tailored resume"
+        ></article>
+      </section>
+    </main>
+
+    <footer>
+      <span>MatchCraft / ATS Resume Workbench</span>
+      <span>Truthful tailoring beats keyword stuffing.</span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
