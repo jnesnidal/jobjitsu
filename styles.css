@@ -810,18 +810,19 @@ textarea:focus {
 }
 
 .resume-paper {
-  width: min(920px, 100%);
-  min-height: 1120px;
+  width: min(8.5in, 100%);
+  height: 11in;
   margin: 0 auto;
-  padding: 70px 78px;
+  padding: 0.45in 0.5in;
+  overflow: visible;
   outline: none;
   color: #111;
   background: white;
   border: 1px solid #d7d7d7;
   box-shadow: var(--shadow);
   font-family: Arial, sans-serif;
-  font-size: 10.5pt;
-  line-height: 1.35;
+  font-size: 9.5pt;
+  line-height: 1.22;
 }
 
 .resume-paper:focus {
@@ -831,53 +832,100 @@ textarea:focus {
 .resume-name {
   margin: 0;
   text-align: center;
-  font-size: 22pt;
+  font-size: 19pt;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .resume-contact {
-  margin: 4px 0 13px;
+  margin: 2px 0 7px;
   text-align: center;
-  font-size: 9.5pt;
+  font-size: 8.5pt;
 }
 
 .resume-paper h2 {
-  margin: 13px 0 5px;
-  padding-bottom: 2px;
+  margin: 7px 0 2px;
+  padding-bottom: 1px;
   border-bottom: 1.5px solid #111;
-  font-size: 11pt;
+  font-size: 10pt;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .resume-paper h3 {
-  margin: 6px 0 1px;
+  margin: 3px 0 0;
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
 }
 
 .resume-paper .subline {
-  margin: 0 0 3px;
+  margin: 0 0 1px;
   display: flex;
   justify-content: space-between;
   font-style: italic;
 }
 
 .resume-paper ul {
-  margin: 3px 0 7px 18px;
+  margin: 1px 0 3px 15px;
   padding: 0;
 }
 
 .resume-paper li {
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .resume-paper .skills-line,
 .resume-paper .summary {
-  margin: 3px 0;
+  margin: 1px 0;
+}
+
+.resume-entry,
+.optional-section {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.resume-overflow {
+  outline: 2px solid #a64b2b;
+}
+
+.resume-section.is-fitting {
+  visibility: hidden;
+}
+
+.resume-paper.resume-density-compact {
+  padding: 0.4in 0.45in;
+  font-size: 9.25pt;
+  line-height: 1.18;
+}
+
+.resume-paper.resume-density-compact h2 {
+  margin-top: 6px;
+}
+
+.resume-paper.resume-density-compact ul {
+  margin-bottom: 2px;
+}
+
+.resume-paper.resume-density-emergency {
+  padding: 0.35in 0.42in;
+  font-size: 8.75pt;
+  line-height: 1.15;
+}
+
+.resume-paper.resume-density-emergency .resume-name {
+  font-size: 18pt;
+}
+
+.resume-paper.resume-density-emergency h2 {
+  margin-top: 5px;
+  font-size: 9.5pt;
+}
+
+.resume-paper.resume-density-emergency h3 {
+  font-size: 9pt;
 }
 
 footer {
@@ -989,8 +1037,10 @@ footer {
   }
 
   .resume-paper {
+    height: auto;
     min-height: auto;
     padding: 38px 26px;
+    overflow: visible;
     font-size: 9.5pt;
   }
 
@@ -1001,6 +1051,11 @@ footer {
 }
 
 @media print {
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
   body {
     background: white;
   }
@@ -1015,8 +1070,7 @@ footer {
   }
 
   main,
-  .resume-section,
-  .resume-paper {
+  .resume-section {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -1029,6 +1083,33 @@ footer {
   }
 
   .resume-paper {
-    min-height: 0;
+    width: 8.5in;
+    height: 11in;
+    min-height: 11in;
+    max-height: 11in;
+    padding: 0.45in 0.5in;
+    overflow: visible;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .resume-paper.resume-density-compact {
+    padding: 0.4in 0.45in;
+  }
+
+  .resume-paper.resume-density-emergency {
+    padding: 0.35in 0.42in;
+  }
+
+  .resume-paper h2,
+  .resume-paper h3,
+  .resume-paper .subline {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .resume-paper li {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }

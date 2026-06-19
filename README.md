@@ -7,7 +7,8 @@ A local-first resume tailoring app. Paste a job description and MatchCraft:
 - identifies supported and unsupported keywords;
 - suggests recurring job-description terms to add to a browser-persistent keyword database;
 - ranks existing experience and projects by relevance;
-- generates an editable, single-column ATS-friendly resume;
+- generates an editable, single-column ATS-friendly resume that measures the
+  Letter page and retains as much relevant content as fits;
 - exports plain text or a print-ready PDF.
 
 ## Gemini mode

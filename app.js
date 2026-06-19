@@ -670,9 +670,10 @@ Rules:
 2. A keyword is supported only when the resume contains direct evidence or an unambiguous equivalent.
 3. Extract exact ATS terms and multi-word phrases from the job description. Ignore benefits, culture copy, and generic filler.
 4. Reword the summary and bullets to emphasize relevant existing evidence and use supported job terminology naturally.
-5. Keep every rewritten bullet concise, factual, and readable. Do not keyword-stuff.
-6. Return each employer and project with the exact company or project name provided.
-7. Put unsupported requirements in keywords with supported=false. Do not insert them into rewritten content.
+5. Keep the summary under 55 words and every rewritten bullet under 28 words so the resume fits one page.
+6. Keep every rewritten bullet factual and readable. Do not keyword-stuff.
+7. Return each employer and project with the exact company or project name provided.
+8. Put unsupported requirements in keywords with supported=false. Do not insert them into rewritten content.
 
 JOB DESCRIPTION:
 ${description}
@@ -930,7 +931,7 @@ function renderResume(title, analysis) {
   const keywords = analysis.matched;
   const skills = orderedSkills(keywords);
   const experience = rankByRelevance(resume.experience, keywords);
-  const projects = rankByRelevance(resume.projects, keywords).slice(0, 3);
+  const projects = rankByRelevance(resume.projects, keywords);
   const aiExperience = new Map(
     (analysis.aiTailoring?.experience || []).map((job) => [
       normalize(job.company || ""),
@@ -950,33 +951,36 @@ function renderResume(title, analysis) {
       : null;
 
   const experienceHtml = experience
-    .map((job) => {
+    .map((job, jobIndex) => {
       const rewritten = aiExperience.get(normalize(job.company));
       const bullets =
         Array.isArray(rewritten) && rewritten.length
           ? rewritten.filter((bullet) => typeof bullet === "string" && bullet.trim())
           : rankByRelevance(job.bullets, keywords);
       return `
-        <h3><span>${escapeHtml(job.company)}</span><span>${escapeHtml(job.dates)}</span></h3>
-        <p class="subline"><span>${escapeHtml(job.role)}</span><span>${escapeHtml(job.location)}</span></p>
-        <ul>${bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+        <div class="resume-entry experience-entry" data-fit-index="${jobIndex}">
+          <h3><span>${escapeHtml(job.company)}</span><span>${escapeHtml(job.dates)}</span></h3>
+          <p class="subline"><span>${escapeHtml(job.role)}</span><span>${escapeHtml(job.location)}</span></p>
+          <ul>${bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+        </div>
       `;
     })
     .join("");
 
   const projectHtml = projects
-    .map((project) => {
+    .map((project, projectIndex) => {
       const rewritten = aiProjects.get(normalize(project.name));
       const bullets =
         Array.isArray(rewritten) && rewritten.length
           ? rewritten
               .filter((bullet) => typeof bullet === "string" && bullet.trim())
-              .slice(0, 3)
-          : rankByRelevance(project.bullets, keywords).slice(0, 3);
+          : rankByRelevance(project.bullets, keywords);
       return `
-        <h3><span>${escapeHtml(project.name)} | ${escapeHtml(project.tech.join(", "))}</span></h3>
-        <p class="subline"><span>${escapeHtml(project.subtitle)}</span></p>
-        <ul>${bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+        <div class="resume-entry project-entry" data-fit-index="${projectIndex}">
+          <h3><span>${escapeHtml(project.name)} | ${escapeHtml(project.tech.join(", "))}</span></h3>
+          <p class="subline"><span>${escapeHtml(project.subtitle)}</span></p>
+          <ul>${bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+        </div>
       `;
     })
     .join("");
@@ -990,20 +994,147 @@ function renderResume(title, analysis) {
     ${Object.entries(skills)
       .map(
         ([category, items]) =>
-          `<p class="skills-line"><strong>${escapeHtml(category)}:</strong> ${escapeHtml(items.join(", "))}</p>`,
+          `<p class="skills-line" data-skills="${encodeURIComponent(JSON.stringify(items))}"><strong>${escapeHtml(category)}:</strong> <span>${escapeHtml(items.join(", "))}</span></p>`,
       )
       .join("")}
     <h2>Professional Experience</h2>
     ${experienceHtml}
-    <h2>Projects</h2>
-    ${projectHtml}
-    <h2>Education</h2>
-    <h3><span>${escapeHtml(resume.education.school)}</span><span>${escapeHtml(resume.education.dates)}</span></h3>
-    <p class="subline"><span>${escapeHtml(resume.education.degree)}</span><span>${escapeHtml(resume.education.location)}</span></p>
-    <p>${escapeHtml(resume.education.details.join(" | "))}</p>
-    <h2>Languages</h2>
-    <p>${escapeHtml(resume.languages.join(" | "))}</p>
+    <div class="education-section">
+      <h2>Education</h2>
+      <h3><span>${escapeHtml(resume.education.school)}</span><span>${escapeHtml(resume.education.dates)}</span></h3>
+      <p class="subline"><span>${escapeHtml(resume.education.degree)}</span><span>${escapeHtml(resume.education.location)}</span></p>
+      <p class="education-details">${escapeHtml(resume.education.details.join(" | "))}</p>
+    </div>
+    <div class="projects-section">
+      <h2>Projects</h2>
+      ${projectHtml}
+    </div>
+    <div class="optional-section languages-section">
+      <h2>Languages</h2>
+      <p>${escapeHtml(resume.languages.join(" | "))}</p>
+    </div>
   `;
+}
+
+function fitResumeToPage() {
+  const paper = elements.resumePreview;
+  if (window.matchMedia("(max-width: 620px)").matches) return true;
+
+  const overflows = () => {
+    void paper.offsetHeight;
+    return paper.scrollHeight > paper.clientHeight + 1;
+  };
+  const removals = [];
+  const addBulletRemovals = (entry, minimum) => {
+    const bullets = [...entry.querySelectorAll("li")];
+    bullets
+      .slice(minimum)
+      .reverse()
+      .forEach((bullet) => removals.push(() => bullet.remove()));
+  };
+
+  if (!paper.classList.contains("resume-density-compact")) {
+    removals.push(() => paper.classList.add("resume-density-compact"));
+  }
+
+  const projectEntries = [...paper.querySelectorAll(".project-entry")];
+  projectEntries
+    .slice(2)
+    .reverse()
+    .forEach((entry) => {
+      addBulletRemovals(entry, 1);
+      removals.push(() => entry.remove());
+    });
+
+  [...paper.querySelectorAll(".experience-entry")]
+    .reverse()
+    .forEach((entry) => addBulletRemovals(entry, 3));
+
+  const skillMinimums = {
+    Languages: 8,
+    "Frameworks & Technologies": 8,
+    Software: 8,
+    Practices: 6,
+  };
+  [...paper.querySelectorAll(".skills-line")].reverse().forEach((line) => {
+    const category = line.querySelector("strong").textContent.replace(/:$/, "");
+    const values = JSON.parse(decodeURIComponent(line.dataset.skills));
+    const minimum = skillMinimums[category] || 6;
+    const removableCount = Math.max(0, values.length - minimum);
+    for (let index = 0; index < removableCount; index += 1) {
+      removals.push(() => {
+        values.pop();
+        line.querySelector("span").textContent = values.join(", ");
+      });
+    }
+  });
+
+  projectEntries
+    .slice(0, 2)
+    .reverse()
+    .forEach((entry) => addBulletRemovals(entry, 2));
+
+  if (projectEntries[1]) removals.push(() => projectEntries[1].remove());
+
+  [...paper.querySelectorAll(".experience-entry")]
+    .reverse()
+    .forEach((entry) => addBulletRemovals(entry, 2));
+
+  if (paper.querySelector(".languages-section")) {
+    removals.push(() => paper.querySelector(".languages-section")?.remove());
+  }
+
+  if (projectEntries[0]) {
+    removals.push(() => projectEntries[0].remove());
+  }
+
+  [...paper.querySelectorAll(".skills-line")].reverse().forEach((line) => {
+    const values = JSON.parse(decodeURIComponent(line.dataset.skills));
+    const minimum = 4;
+    const removableCount = Math.max(0, values.length - minimum);
+    for (let index = 0; index < removableCount; index += 1) {
+      removals.push(() => {
+        values.pop();
+        line.querySelector("span").textContent = values.join(", ");
+      });
+    }
+  });
+
+  const educationDetails = paper.querySelector(".education-details");
+  if (educationDetails) removals.push(() => educationDetails.remove());
+
+  if (!paper.classList.contains("resume-density-emergency")) {
+    removals.push(() => paper.classList.add("resume-density-emergency"));
+  }
+
+  [...paper.querySelectorAll(".experience-entry")]
+    .reverse()
+    .forEach((entry) => addBulletRemovals(entry, 1));
+
+  let removalIndex = 0;
+  let consecutivePasses = 0;
+  const maxChecks = removals.length + 12;
+
+  for (let check = 0; check < maxChecks; check += 1) {
+    if (!overflows()) {
+      consecutivePasses += 1;
+      if (consecutivePasses >= 3) {
+        paper.classList.remove("resume-overflow");
+        return true;
+      }
+      continue;
+    }
+
+    consecutivePasses = 0;
+    const remove = removals[removalIndex];
+    if (!remove) break;
+    removalIndex += 1;
+    remove();
+  }
+
+  const fits = !overflows();
+  paper.classList.toggle("resume-overflow", !fits);
+  return fits;
 }
 
 function renderChip(keyword, missing = false) {
@@ -1118,6 +1249,16 @@ async function generate() {
   renderAnalysis(analysis);
   renderResume(title, analysis);
   elements.resumeSection.hidden = false;
+  elements.resumeSection.classList.add("is-fitting");
+  const resumeFits = fitResumeToPage();
+  elements.resumeSection.classList.remove("is-fitting");
+  if (!resumeFits) {
+    elements.resumeSection.hidden = true;
+    elements.inputError.textContent =
+      "The generated resume could not be fitted safely on one page. No clipped resume was shown.";
+    showToast("Resume withheld because it did not pass page-fit checks");
+    return;
+  }
   elements.resultsContent.animate(
     [
       { opacity: 0, transform: "translateY(12px)" },
@@ -1239,4 +1380,13 @@ elements.downloadButton.addEventListener("click", () => {
   showToast("ATS-safe text resume downloaded");
 });
 
-elements.printButton.addEventListener("click", () => window.print());
+elements.printButton.addEventListener("click", () => {
+  elements.resumeSection.classList.add("is-fitting");
+  const resumeFits = fitResumeToPage();
+  elements.resumeSection.classList.remove("is-fitting");
+  if (!resumeFits) {
+    showToast("Print blocked: the edited resume does not fit on one page");
+    return;
+  }
+  window.print();
+});
