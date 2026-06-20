@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260619-2" />
+    <link rel="stylesheet" href="styles.css?v=20260619-16" />
   </head>
   <body>
     <header class="site-header">
@@ -108,6 +108,25 @@
             </p>
           </div>
 
+          <div class="exaggerate-control">
+            <label class="switch-row" for="exaggerateMode">
+              <span>
+                <strong>Exaggerate</strong>
+                <small>Suggest relevant skills not currently supported</small>
+              </span>
+              <input
+                id="exaggerateMode"
+                type="checkbox"
+                role="switch"
+                aria-describedby="exaggerateNote"
+              />
+            </label>
+            <p id="exaggerateNote">
+              Suggested skills require your confirmation before they appear on
+              the resume.
+            </p>
+          </div>
+
           <label for="targetTitle">Target job title</label>
           <input
             id="targetTitle"
@@ -115,6 +134,16 @@
             placeholder="e.g. Full Stack Software Engineer"
             autocomplete="off"
           />
+
+          <label for="resumeLocation">Resume location</label>
+          <select id="resumeLocation">
+            <option value="">No location</option>
+            <option value="Minneapolis, MN">Minneapolis, MN</option>
+            <option value="Jordan, MN 55352">Jordan, MN 55352</option>
+            <option value="19988 Berkshire Ave. Jordan, MN 55352">
+              19988 Berkshire Ave. Jordan, MN 55352
+            </option>
+          </select>
 
           <div class="label-row">
             <label for="jobDescription">Job description</label>
@@ -204,6 +233,24 @@
               </p>
             </div>
 
+            <div class="stretch-panel" id="stretchPanel" hidden>
+              <span class="keyword-label missing">Exaggerate mode</span>
+              <h3>Confirm additional skills</h3>
+              <p>
+                These skills appear in the job description but are not supported
+                by the current resume. Select only skills you can truthfully
+                discuss in an interview.
+              </p>
+              <div
+                class="stretch-candidates"
+                id="stretchCandidates"
+                aria-label="Unverified skill suggestions"
+              ></div>
+              <button id="applyStretchSkills" class="secondary-button" type="button">
+                Apply confirmed skills
+              </button>
+            </div>
+
             <div class="keyword-database-prompt" id="keywordDatabasePrompt" hidden>
               <div class="database-prompt-heading">
                 <div>
@@ -267,7 +314,7 @@
               Download .txt
             </button>
             <button id="printButton" class="primary-button compact" type="button">
-              Print / Save PDF
+              Download text PDF
             </button>
           </div>
         </div>
@@ -288,6 +335,6 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=20260619-2"></script>
+    <script src="app.js?v=20260619-16"></script>
   </body>
 </html>

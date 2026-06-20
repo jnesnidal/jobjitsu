@@ -43,7 +43,6 @@ const resume = {
       "GraphQL",
       "MongoDB",
       "Neo4j",
-      "RStudio",
       "Docker",
       "ROS",
       "Gazebo",
@@ -116,6 +115,7 @@ const resume = {
       bullets: [
         "Developed a Next.js web application that uses a webcam and a neural network hosted on Roboflow to teach American Sign Language.",
         "Created a coaching feature using Google Gemini image recognition to identify errors and provide corrective feedback.",
+        "Implemented a PostgreSQL back end in Supabase for authentication and learning-progress analytics.",
       ],
     },
     {
@@ -137,7 +137,6 @@ const resume = {
         "Designed, developed, and tested two interactive virtual science labs for online and in-person classrooms.",
         "Created HTML5-compatible web applications with cross-platform support in GameMaker Studio 2.",
         "Designed all embedded graphics to provide a polished, intuitive user experience.",
-        "Implemented a PostgreSQL back end in Supabase for authentication and learning-progress analytics.",
       ],
     },
   ],
@@ -249,6 +248,117 @@ const responsibilityPhrases = {
   "data governance": ["data governance", "data quality", "data integrity"],
 };
 
+const softSkillCatalog = [
+  ["Communication", ["communication skills", "communicate effectively"], ["communicate", "stakeholders", "customers"]],
+  ["Written Communication", ["writing skills", "written communication skills"], ["reporting", "documentation", "written"]],
+  ["Verbal Communication", ["verbal skills", "oral communication"], ["customers", "meetings", "stakeholders"]],
+  ["Presentation", ["presentation skills", "presenting"], ["visualizations", "dashboards", "leadership"]],
+  ["Active Listening", ["active listener", "listening skills"], ["assess needs", "customer needs", "requirements"]],
+  ["Collaboration", ["collaborative", "collaborate effectively"], ["collaborated", "stakeholders", "scrum"]],
+  ["Teamwork", ["team player", "team environment"], ["team of", "collaborated", "scrum"]],
+  ["Cross-Functional Collaboration", ["cross-functional", "cross functional"], ["stakeholders", "production and supply chain", "customers"]],
+  ["Stakeholder Management", ["stakeholder engagement", "manage stakeholders"], ["stakeholders", "leadership", "customers"]],
+  ["Relationship Building", ["build relationships", "relationship management"], ["customers", "stakeholders", "team"]],
+  ["Leadership", ["leadership skills", "demonstrated leadership"], ["led a team", "project lead"]],
+  ["Team Leadership", ["lead a team", "team lead"], ["led a team", "project lead"]],
+  ["Mentoring", ["mentor", "mentorship"], ["led a team", "team of"]],
+  ["Coaching", ["coach others", "coaching skills"], ["feedback", "led a team", "teach"]],
+  ["Delegation", ["delegate tasks", "effective delegation"], ["led a team", "project lead"]],
+  ["Decision Making", ["decision-making", "make decisions"], ["decision-making", "actionable insights"]],
+  ["Strategic Thinking", ["strategic mindset", "think strategically"], ["trends", "opportunities", "optimization"]],
+  ["Vision Setting", ["set direction", "define vision"], ["led a team", "designed"]],
+  ["Influence", ["influencing skills", "influence stakeholders"], ["stakeholders", "leadership", "customers"]],
+  ["Conflict Resolution", ["resolve conflict", "conflict management"], ["customer needs", "scrum", "team"]],
+  ["Negotiation", ["negotiation skills", "negotiate"], ["customers", "stakeholders", "requirements"]],
+  ["Problem Solving", ["problem-solving", "solve problems"], ["inefficiencies", "bottlenecks", "solutions"]],
+  ["Critical Thinking", ["critical thinker", "critical-thinking"], ["analyze", "identify", "assess"]],
+  ["Analytical Thinking", ["analytical mindset", "analytical skills"], ["analyze", "analytics", "data"]],
+  ["Creative Thinking", ["creative problem solving", "think creatively"], ["designed", "graphics", "solutions"]],
+  ["Troubleshooting", ["troubleshoot", "diagnose issues"], ["bottlenecks", "tested", "calibration"]],
+  ["Root Cause Analysis", ["root-cause analysis", "identify root causes"], ["drivers", "bottlenecks", "inefficiencies"]],
+  ["Sound Judgment", ["good judgment", "professional judgment"], ["decision-making", "assess needs"]],
+  ["Resourcefulness", ["resourceful", "find solutions"], ["solutions", "from scratch", "integrated"]],
+  ["Initiative", ["self-starter", "proactive"], ["led", "built", "designed"]],
+  ["Adaptability", ["adaptable", "fast-paced"], ["cross-platform", "front-end and back-end", "multiple"]],
+  ["Flexibility", ["flexible", "changing priorities"], ["cross-platform", "multiple", "enhanced"]],
+  ["Learning Agility", ["quick learner", "learn quickly"], ["technologies", "frameworks", "trained"]],
+  ["Resilience", ["resilient", "perseverance"], ["reliability", "maintained", "tested"]],
+  ["Change Management", ["manage change", "organizational change"], ["enhanced", "optimization", "implemented"]],
+  ["Stress Management", ["work under pressure", "handle pressure"], ["high-volume", "timely", "active sessions"]],
+  ["Time Management", ["manage time", "meet deadlines"], ["timely", "maintain", "deployed"]],
+  ["Prioritization", ["prioritize tasks", "manage priorities"], ["key components", "actionable", "track"]],
+  ["Organization", ["organizational skills", "highly organized"], ["structured", "maintain", "track"]],
+  ["Planning", ["planning skills", "plan projects"], ["designed", "project lead", "workflows"]],
+  ["Goal Setting", ["set goals", "goal-oriented"], ["track performance", "initiatives", "outcomes"]],
+  ["Accountability", ["accountable", "take accountability"], ["led", "maintain", "ensuring"]],
+  ["Ownership", ["take ownership", "sense of ownership"], ["led", "built", "from scratch"]],
+  ["Reliability", ["reliable", "dependable"], ["reliability", "maintain", "100% code coverage"]],
+  ["Dependability", ["dependable", "consistent"], ["maintain", "timely", "reliability"]],
+  ["Self-Motivation", ["self-motivated", "motivated"], ["led", "built", "developed"]],
+  ["Independence", ["work independently", "independent worker"], ["from scratch", "designed all", "built"]],
+  ["Work Ethic", ["strong work ethic", "dedicated"], ["maintain", "tested", "developed"]],
+  ["Integrity", ["high integrity", "ethical"], ["accurate", "ensuring", "secure"]],
+  ["Professionalism", ["professional demeanor", "professional"], ["customers", "leadership", "stakeholders"]],
+  ["Attention to Detail", ["detail-oriented", "detail oriented"], ["100% code coverage", "accurate", "calibration"]],
+  ["Accuracy", ["highly accurate", "accuracy"], ["accurate", "100% code coverage", "ensuring"]],
+  ["Quality Focus", ["quality-focused", "quality minded"], ["code quality", "tested", "code coverage"]],
+  ["Process Improvement", ["improve processes", "process optimization"], ["inefficiencies", "optimization", "workflows"]],
+  ["Continuous Improvement", ["continuous-improvement mindset", "continuous improvement"], ["enhanced", "optimization", "improvement"]],
+  ["Customer Focus", ["customer-focused", "customer centric"], ["customers", "customer needs", "user experience"]],
+  ["Customer Service", ["service skills", "customer service skills"], ["customers", "customer needs", "feedback"]],
+  ["Client Management", ["manage clients", "client relations"], ["customers", "customer needs", "solutions"]],
+  ["Empathy", ["empathetic", "understand users"], ["customer needs", "user experience", "teach"]],
+  ["Emotional Intelligence", ["emotionally intelligent", "eq"], ["customers", "team", "feedback"]],
+  ["Interpersonal Skills", ["people skills", "interpersonal communication"], ["customers", "stakeholders", "team"]],
+  ["Cultural Awareness", ["cultural sensitivity", "cross-cultural"], ["spanish", "american sign language", "team"]],
+  ["Inclusivity", ["inclusive", "inclusion"], ["accessibility", "american sign language", "students"]],
+  ["Diplomacy", ["tactful", "diplomatic"], ["customers", "stakeholders", "feedback"]],
+  ["Patience", ["patient", "patience"], ["teach", "students", "customer needs"]],
+  ["Curiosity", ["intellectual curiosity", "curious"], ["research", "analyze", "identify"]],
+  ["Growth Mindset", ["growth-oriented", "continuous learner"], ["trained", "enhanced", "learning"]],
+  ["Openness to Feedback", ["receptive to feedback", "accept feedback"], ["feedback", "customers", "scrum"]],
+  ["Giving Feedback", ["provide feedback", "constructive feedback"], ["feedback", "leadership", "teach"]],
+  ["Facilitation", ["facilitation skills", "facilitate meetings"], ["meetings", "stakeholders", "team"]],
+  ["Meeting Management", ["run meetings", "manage meetings"], ["scrum meetings", "stakeholders"]],
+  ["Documentation", ["documentation skills", "document clearly"], ["reporting", "uml", "workflows"]],
+  ["Storytelling", ["data storytelling", "tell stories with data"], ["visualizations", "dashboards", "communicate"]],
+  ["Persuasion", ["persuasive communication", "persuade"], ["stakeholders", "leadership", "customers"]],
+  ["Public Speaking", ["public-speaking", "speak publicly"], ["presentation", "leadership", "communicate"]],
+  ["Business Acumen", ["business understanding", "business savvy"], ["sales data", "cost-saving", "ordering trends"]],
+  ["Commercial Awareness", ["commercial mindset", "market awareness"], ["sales data", "cost-saving", "ordering trends"]],
+  ["Systems Thinking", ["systems thinker", "holistic thinking"], ["system", "front-end and back-end", "supply chain"]],
+  ["Design Thinking", ["human-centered design", "design-thinking"], ["user experience", "customer needs", "designed"]],
+  ["Innovation", ["innovative", "innovation mindset"], ["engineered", "created", "designed"]],
+  ["Creativity", ["creative", "original thinking"], ["graphics", "designed", "created"]],
+  ["Ideation", ["generate ideas", "brainstorming"], ["designed", "solutions", "created"]],
+  ["Research", ["research skills", "conduct research"], ["research project", "analyze", "trained"]],
+  ["Information Synthesis", ["synthesize information", "synthesis"], ["analyze", "insights", "requirements"]],
+  ["Data-Informed Decision Making", ["data-driven decisions", "data informed"], ["actionable insights", "decision-making", "metrics"]],
+  ["Risk Management", ["manage risk", "risk assessment"], ["secure", "reliability", "ensuring"]],
+  ["Crisis Management", ["crisis response", "incident management"], ["bottlenecks", "active sessions", "reliability"]],
+  ["Project Coordination", ["coordinate projects", "project coordination"], ["project lead", "team of", "workflows"]],
+  ["Project Management", ["manage projects", "project-management"], ["project lead", "jira", "kanban"]],
+  ["Results Orientation", ["results-driven", "results oriented"], ["outcomes", "opportunities", "100% code coverage"]],
+  ["Outcome Focus", ["outcome-focused", "focus on outcomes"], ["outcomes", "cost-saving", "performance"]],
+  ["Efficiency", ["efficient", "efficiency-minded"], ["inefficiencies", "optimization", "performance"]],
+  ["Multitasking", ["multi-tasking", "manage multiple tasks"], ["front-end and back-end", "multiple", "across"]],
+  ["Remote Collaboration", ["distributed team", "virtual collaboration"], ["cloud-based", "gitlab", "github"]],
+  ["Technical Communication", ["explain technical concepts", "technical communicator"], ["customers", "visualizations", "requirements"]],
+  ["Requirements Gathering", ["gather requirements", "requirements elicitation"], ["assess needs", "customer needs", "requirements"]],
+  ["Consultative Approach", ["consultative", "solution consulting"], ["assess needs", "customers", "solutions"]],
+  ["Service Orientation", ["service-oriented", "service mindset"], ["customers", "students", "user experience"]],
+  ["Consensus Building", ["build consensus", "align stakeholders"], ["stakeholders", "team", "scrum"]],
+  ["Networking", ["professional networking", "build a network"], ["customers", "stakeholders", "team"]],
+];
+
+const softSkillAliases = Object.fromEntries(
+  softSkillCatalog.map(([skill, aliases]) => [skill, [skill.toLowerCase(), ...aliases]]),
+);
+
+const softSkillEvidence = Object.fromEntries(
+  softSkillCatalog.map(([skill, , evidence]) => [skill, evidence]),
+);
+
 const stopWords = new Set(
   "a an and are as at be by for from has have in into is it its of on or our that the their this to using we will with you your years year required preferred ability strong work role team about across all also applications build building candidate candidates company computer degree design develop developing development engineer environment excellent experience features field full including knowledge maintain must position product related responsibilities responsible science seeking services software solutions stack support systems technical technology understanding users working".split(
     " ",
@@ -293,6 +403,7 @@ const candidateNoise = new Set(
 const elements = {
   jobDescription: document.querySelector("#jobDescription"),
   targetTitle: document.querySelector("#targetTitle"),
+  resumeLocation: document.querySelector("#resumeLocation"),
   wordCount: document.querySelector("#wordCount"),
   generateButton: document.querySelector("#generateButton"),
   inputError: document.querySelector("#inputError"),
@@ -318,6 +429,10 @@ const elements = {
   geminiSettings: document.querySelector("#geminiSettings"),
   geminiApiKey: document.querySelector("#geminiApiKey"),
   toggleApiKey: document.querySelector("#toggleApiKey"),
+  exaggerateMode: document.querySelector("#exaggerateMode"),
+  stretchPanel: document.querySelector("#stretchPanel"),
+  stretchCandidates: document.querySelector("#stretchCandidates"),
+  applyStretchSkills: document.querySelector("#applyStretchSkills"),
   generateButtonLabel: document.querySelector("#generateButtonLabel"),
   privacyText: document.querySelector("#privacyText"),
   resumeSection: document.querySelector("#resumeSection"),
@@ -329,6 +444,10 @@ const elements = {
 };
 
 let tailoringMode = "local";
+let lastGeneratedAnalysis = null;
+let lastGeneratedTitle = "";
+let confirmedSkillsDescription = "";
+const confirmedStretchSkills = new Set();
 
 const geminiResponseSchema = {
   type: "object",
@@ -497,21 +616,26 @@ function canonicalTerm(value) {
 }
 
 function containsKnownKeyword(candidate) {
-  return [...Object.values(skillAliases), ...Object.values(responsibilityPhrases)].some(
-    (aliases) => containsAlias(candidate, aliases),
-  );
+  return [
+    ...Object.values(skillAliases),
+    ...Object.values(responsibilityPhrases),
+    ...Object.values(softSkillAliases),
+  ].some((aliases) => containsAlias(candidate, aliases));
 }
 
 function isKnownKeywordFragment(candidate) {
   const canonical = canonicalTerm(candidate);
   if (normalize(candidate).includes(" ")) return false;
-  return [...Object.values(skillAliases), ...Object.values(responsibilityPhrases)].some(
-    (aliases) =>
-      aliases.some((alias) =>
-        normalize(alias)
-          .split(/[^a-z0-9+#.]+/)
-          .some((part) => canonicalTerm(part) === canonical),
-      ),
+  return [
+    ...Object.values(skillAliases),
+    ...Object.values(responsibilityPhrases),
+    ...Object.values(softSkillAliases),
+  ].some((aliases) =>
+    aliases.some((alias) =>
+      normalize(alias)
+        .split(/[^a-z0-9+#.]+/)
+        .some((part) => canonicalTerm(part) === canonical),
+    ),
   );
 }
 
@@ -608,16 +732,17 @@ function extractJobKeywords(description) {
   const lines = getWeightedLines(description);
   const rankedSkills = rankKnownKeywords(lines, skillAliases);
   const rankedResponsibilities = rankKnownKeywords(lines, responsibilityPhrases);
+  const rankedSoftSkills = rankKnownKeywords(lines, softSkillAliases);
   const importance = Object.fromEntries(
-    [...rankedSkills, ...rankedResponsibilities].map(({ keyword, importance: score }) => [
-      keyword,
-      score,
-    ]),
+    [...rankedSkills, ...rankedResponsibilities, ...rankedSoftSkills].map(
+      ({ keyword, importance: score }) => [keyword, score],
+    ),
   );
 
   return {
     skills: rankedSkills.map(({ keyword }) => keyword),
     responsibilities: rankedResponsibilities.map(({ keyword }) => keyword),
+    softSkills: rankedSoftSkills.map(({ keyword }) => keyword),
     recurringTerms: extractUnknownCandidates(lines),
     importance,
   };
@@ -625,13 +750,21 @@ function extractJobKeywords(description) {
 
 function isKnownKeywordAlias(term) {
   const canonical = canonicalTerm(term);
-  return [...Object.values(skillAliases), ...Object.values(responsibilityPhrases)].some(
-    (aliases) => aliases.some((alias) => canonicalTerm(alias) === canonical),
+  return [
+    ...Object.values(skillAliases),
+    ...Object.values(responsibilityPhrases),
+    ...Object.values(softSkillAliases),
+  ].some((aliases) =>
+    aliases.some((alias) => canonicalTerm(alias) === canonical),
   );
 }
 
 function isSupported(keyword) {
-  const aliases = skillAliases[keyword] || responsibilityPhrases[keyword] || [keyword];
+  const aliases =
+    softSkillEvidence[keyword] ||
+    skillAliases[keyword] ||
+    responsibilityPhrases[keyword] ||
+    [keyword];
   return aliases.some((alias) => allResumeText.includes(alias.toLowerCase()));
 }
 
@@ -651,6 +784,23 @@ function rankByRelevance(items, keywords) {
       score: textScore(JSON.stringify(item), keywords),
     }))
     .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(({ item }) => item);
+}
+
+function experienceStartDate(dateRange) {
+  const start = String(dateRange).split(/\s+-\s+/)[0]?.trim();
+  const timestamp = Date.parse(start);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function reverseChronologicalExperience(items) {
+  return items
+    .map((item, index) => ({
+      item,
+      index,
+      startDate: experienceStartDate(item.dates),
+    }))
+    .sort((a, b) => b.startDate - a.startDate || a.index - b.index)
     .map(({ item }) => item);
 }
 
@@ -852,7 +1002,11 @@ function buildGeminiAnalysis(description, geminiResult) {
 
 function buildAnalysis(description) {
   const extracted = extractJobKeywords(description);
-  const jobKeywords = [...extracted.skills, ...extracted.responsibilities];
+  const jobKeywords = [
+    ...extracted.skills,
+    ...extracted.responsibilities,
+    ...extracted.softSkills,
+  ];
   const matched = jobKeywords.filter(isSupported);
   const missing = jobKeywords.filter((keyword) => !isSupported(keyword));
 
@@ -908,16 +1062,230 @@ function buildSummary(title, matched) {
   return `${title} candidate with professional experience in software development and data analytics. Hands-on background with ${skills}. Computer Science graduate experienced in building tested applications, collaborating with stakeholders, and translating requirements into practical technical solutions.`;
 }
 
-function orderedSkills(jobKeywords) {
-  return Object.fromEntries(
-    Object.entries(resume.skills).map(([category, skills]) => [
-      category,
-      [...skills].sort((a, b) => {
-        const aScore = textScore(a, jobKeywords);
-        const bScore = textScore(b, jobKeywords);
-        return bScore - aScore;
-      }),
+const atsSkillCategories = [
+  {
+    label: "Languages",
+    terms: new Set([
+      "c", "c#", "c++", "groovy", "html/css", "java", "javascript", "kotlin",
+      "python", "r", "ruby", "rust", "sql", "typescript",
     ]),
+  },
+  {
+    label: "Technologies",
+    terms: new Set([
+      ".net", "angular", "asp.net", "express.js", "flask", "hibernate", "jest",
+      "next.js", "node.js", "react", "spring boot", "tensorflow", "pytorch", "vue",
+      "automated testing", "cypress", "integration testing", "selenium",
+      "unit testing",
+      "graphql", "microservices", "restful apis", "system design", "websockets",
+      "gazebo", "git", "github", "gitlab", "jira", "linux", "opencv", "roboflow",
+      "ros",
+      "agile", "algorithms", "data structures", "kanban",
+      "object-oriented programming", "scrum", "software development life cycle",
+      "uml",
+    ]),
+  },
+  {
+    label: "Data & Cloud",
+    terms: new Set([
+      "aws", "azure", "ci/cd", "data analysis", "data modeling",
+      "data visualization", "databricks", "devops", "docker", "dynamodb", "etl",
+      "gcp", "github actions", "gitlab ci", "jenkins", "kubernetes", "looker",
+      "machine learning", "microsoft sql server", "mongodb", "mysql", "neo4j",
+      "natural language processing", "numpy", "oracle", "pandas", "postgresql",
+      "power bi", "redis", "relational databases", "snowflake", "spark",
+      "supabase", "tableau", "terraform",
+    ]),
+  },
+  {
+    label: "Soft Skills",
+    terms: new Set([
+      "adaptability", "attention to detail", "collaboration", "communication",
+      "customer focus", "leadership", "problem solving", "teamwork",
+    ]),
+  },
+];
+
+function canonicalSkillLabel(term) {
+  const canonical = canonicalTerm(term);
+  const known = Object.keys(skillAliases).find((skill) =>
+    [skill, ...(skillAliases[skill] || [])].some(
+      (alias) => canonicalTerm(alias) === canonical,
+    ),
+  );
+  return known || term.trim();
+}
+
+function atsSkillLabel(term) {
+  const canonical = canonicalSkillLabel(term);
+  const normalizedTerm = normalize(term);
+  const normalizedCanonical = normalize(canonical);
+  const expandedAcronyms = new Set(["aws", "gcp", "etl", "ci/cd"]);
+  if (
+    expandedAcronyms.has(normalizedCanonical) &&
+    normalizedTerm !== normalizedCanonical &&
+    !normalizedTerm.includes(normalizedCanonical)
+  ) {
+    return `${canonical} (${term.trim()})`;
+  }
+  return canonical;
+}
+
+function skillCategory(term) {
+  const normalized = normalize(canonicalSkillLabel(term));
+  return (
+    atsSkillCategories.find(({ terms }) => terms.has(normalized))?.label ||
+    "Technologies"
+  );
+}
+
+function skillPriority(term, analysis, index) {
+  const importance = analysis.importance?.[term] || 0;
+  const aiKeyword = (analysis.aiTailoring?.keywords || []).find(
+    (keyword) => normalize(keyword.term || "") === normalize(term),
+  );
+  return (aiKeyword?.importance || importance) * 100 - index;
+}
+
+function tailoredSkills(analysis) {
+  const supportedJobSkills = (analysis.skills || [])
+    .filter((skill) => analysis.matched.some((matched) => normalize(matched) === normalize(skill)))
+    .map((skill, index) => ({
+      skill: atsSkillLabel(skill),
+      exactJobTerm: skill.trim(),
+      category: skillCategory(skill),
+      priority: skillPriority(skill, analysis, index),
+    }));
+
+  const allSourceSkills = Object.values(resume.skills)
+    .flat()
+    .map((skill, index) => ({
+      skill,
+      exactJobTerm: skill,
+      category: skillCategory(skill),
+      priority: textScore(skill, analysis.skills || []) * 25 - index,
+    }));
+  const sourceSkills = allSourceSkills.filter(({ priority }) => priority > 0);
+
+  const candidates = [...supportedJobSkills, ...sourceSkills]
+    .sort((a, b) => b.priority - a.priority)
+    .filter((candidate, index, items) => {
+      const identity = normalize(canonicalSkillLabel(candidate.skill));
+      return (
+        items.findIndex(
+          (item) => normalize(canonicalSkillLabel(item.skill)) === identity,
+        ) === index
+      );
+    })
+    .slice(0, 18);
+
+  const selectedIdentities = new Set(
+    candidates.map(({ skill }) => normalize(canonicalSkillLabel(skill))),
+  );
+  const relevantCategories = new Set(candidates.map(({ category }) => category));
+  const categoryCounts = candidates.reduce((counts, { category }) => {
+    counts.set(category, (counts.get(category) || 0) + 1);
+    return counts;
+  }, new Map());
+  const adjacentPool = allSourceSkills.filter(
+    ({ skill, category }) =>
+      relevantCategories.has(category) &&
+      !selectedIdentities.has(normalize(canonicalSkillLabel(skill))),
+  );
+  const orderedCategories = [...relevantCategories]
+    .filter((category) => category !== "Soft Skills")
+    .sort(
+      (a, b) =>
+        (categoryCounts.get(a) || 0) - (categoryCounts.get(b) || 0),
+    );
+  const adjacentByCategory = new Map(
+    orderedCategories.map((category) => [
+      category,
+      adjacentPool
+        .filter((skill) => skill.category === category)
+        .sort((a, b) => b.priority - a.priority),
+    ]),
+  );
+  const adjacentSkills = [];
+  for (let round = 0; adjacentSkills.length < 10; round += 1) {
+    let addedInRound = false;
+    for (const category of orderedCategories) {
+      const candidate = adjacentByCategory.get(category)?.[round];
+      if (!candidate) continue;
+      adjacentSkills.push(candidate);
+      addedInRound = true;
+      if (adjacentSkills.length >= 10) break;
+    }
+    if (!addedInRound) break;
+  }
+  candidates.push(...adjacentSkills);
+
+  const hardSkillIdentities = new Set(
+    candidates.map(({ skill }) => normalize(canonicalSkillLabel(skill))),
+  );
+  const fallbackCategoryCounts = candidates.reduce((counts, { category }) => {
+    counts.set(category, (counts.get(category) || 0) + 1);
+    return counts;
+  }, new Map());
+  while (hardSkillIdentities.size < 15) {
+    const fallback = allSourceSkills
+      .filter(
+        ({ skill }) =>
+          !hardSkillIdentities.has(normalize(canonicalSkillLabel(skill))),
+      )
+      .sort(
+        (a, b) =>
+          (fallbackCategoryCounts.get(a.category) || 0) -
+            (fallbackCategoryCounts.get(b.category) || 0) ||
+          b.priority - a.priority,
+      )[0];
+    if (!fallback) break;
+    candidates.push(fallback);
+    hardSkillIdentities.add(normalize(canonicalSkillLabel(fallback.skill)));
+    fallbackCategoryCounts.set(
+      fallback.category,
+      (fallbackCategoryCounts.get(fallback.category) || 0) + 1,
+    );
+  }
+
+  (analysis.softSkills || [])
+    .filter(isSupported)
+    .slice(0, 4)
+    .forEach((skill, index) => {
+      candidates.push({
+        skill,
+        exactJobTerm: skill,
+        category: "Soft Skills",
+        priority: skillPriority(skill, analysis, index),
+      });
+    });
+
+  if (elements.exaggerateMode.checked) {
+    [...confirmedStretchSkills].forEach((skill, index) => {
+      candidates.push({
+        skill: atsSkillLabel(skill),
+        exactJobTerm: skill,
+        category: skillCategory(skill),
+        priority: 1000 - index,
+        confirmed: true,
+      });
+    });
+  }
+
+  const grouped = Object.fromEntries(
+    atsSkillCategories.map(({ label }) => [label, []]),
+  );
+  candidates
+    .sort((a, b) => b.priority - a.priority)
+    .forEach(({ skill, exactJobTerm, category, confirmed }) => {
+      const output = confirmed ? atsSkillLabel(exactJobTerm) : skill;
+      if (!grouped[category].some((item) => normalize(item) === normalize(output))) {
+        grouped[category].push(output);
+      }
+    });
+
+  return Object.fromEntries(
+    Object.entries(grouped).filter(([, skills]) => skills.length > 0),
   );
 }
 
@@ -929,8 +1297,8 @@ function escapeHtml(value) {
 
 function renderResume(title, analysis) {
   const keywords = analysis.matched;
-  const skills = orderedSkills(keywords);
-  const experience = rankByRelevance(resume.experience, keywords);
+  const skills = tailoredSkills(analysis);
+  const experience = reverseChronologicalExperience(resume.experience);
   const projects = rankByRelevance(resume.projects, keywords);
   const aiExperience = new Map(
     (analysis.aiTailoring?.experience || []).map((job) => [
@@ -949,6 +1317,10 @@ function renderResume(title, analysis) {
     analysis.aiTailoring.summary.trim().length >= 40
       ? analysis.aiTailoring.summary.trim()
       : null;
+  const selectedLocation = elements.resumeLocation.value;
+  const contactLine = selectedLocation
+    ? `${selectedLocation} | ${resume.contact}`
+    : resume.contact;
 
   const experienceHtml = experience
     .map((job, jobIndex) => {
@@ -987,10 +1359,10 @@ function renderResume(title, analysis) {
 
   elements.resumePreview.innerHTML = `
     <h1 class="resume-name">${escapeHtml(resume.name)}</h1>
-    <p class="resume-contact">${escapeHtml(resume.contact)}</p>
+    <p class="resume-contact">${escapeHtml(contactLine)}</p>
     <h2>Professional Summary</h2>
     <p class="summary">${escapeHtml(aiSummary || buildSummary(title, analysis.matched))}</p>
-    <h2>Technical Skills</h2>
+    <h2>Skills</h2>
     ${Object.entries(skills)
       .map(
         ([category, items]) =>
@@ -1006,11 +1378,11 @@ function renderResume(title, analysis) {
       <p class="education-details">${escapeHtml(resume.education.details.join(" | "))}</p>
     </div>
     <div class="projects-section">
-      <h2>Projects</h2>
+      <h2>Projects <span class="projects-note">(full source code for non-proprietary projects can be found at github.com/jnesnidal)</span></h2>
       ${projectHtml}
     </div>
     <div class="optional-section languages-section">
-      <h2>Languages</h2>
+      <h2>Languages Spoken</h2>
       <p>${escapeHtml(resume.languages.join(" | "))}</p>
     </div>
   `;
@@ -1025,6 +1397,36 @@ function fitResumeToPage() {
     return paper.scrollHeight > paper.clientHeight + 1;
   };
   const removals = [];
+  const hardSkillCount = () =>
+    [...paper.querySelectorAll(".skills-line")]
+      .filter(
+        (line) =>
+          line.querySelector("strong")?.textContent.replace(/:$/, "") !==
+          "Soft Skills",
+      )
+      .reduce(
+        (total, line) =>
+          total +
+          line
+            .querySelector("span")
+            .textContent.split(",")
+            .map((skill) => skill.trim())
+            .filter(Boolean).length,
+        0,
+      );
+  const addSkillRemoval = (line) => {
+    removals.push(() => {
+      const category = line.querySelector("strong").textContent.replace(/:$/, "");
+      const values = line
+        .querySelector("span")
+        .textContent.split(",")
+        .map((skill) => skill.trim())
+        .filter(Boolean);
+      if (category !== "Soft Skills" && hardSkillCount() <= 15) return;
+      values.pop();
+      line.querySelector("span").textContent = values.join(", ");
+    });
+  };
   const addBulletRemovals = (entry, minimum) => {
     const bullets = [...entry.querySelectorAll("li")];
     bullets
@@ -1062,10 +1464,7 @@ function fitResumeToPage() {
     const minimum = skillMinimums[category] || 6;
     const removableCount = Math.max(0, values.length - minimum);
     for (let index = 0; index < removableCount; index += 1) {
-      removals.push(() => {
-        values.pop();
-        line.querySelector("span").textContent = values.join(", ");
-      });
+      addSkillRemoval(line);
     }
   });
 
@@ -1093,10 +1492,7 @@ function fitResumeToPage() {
     const minimum = 4;
     const removableCount = Math.max(0, values.length - minimum);
     for (let index = 0; index < removableCount; index += 1) {
-      removals.push(() => {
-        values.pop();
-        line.querySelector("span").textContent = values.join(", ");
-      });
+      addSkillRemoval(line);
     }
   });
 
@@ -1161,6 +1557,53 @@ function renderKeywordSuggestions(suggestions) {
   elements.keywordDatabasePrompt.hidden = suggestions.length === 0;
 }
 
+function stretchSkillCandidates(analysis) {
+  const aiCandidates = (analysis.aiTailoring?.keywords || [])
+    .filter(
+      (keyword) =>
+        keyword &&
+        keyword.supported === false &&
+        ["hard_skill", "domain"].includes(keyword.category),
+    )
+    .map((keyword) => keyword.term);
+  const localCandidates = (analysis.skills || []).filter((skill) =>
+    analysis.missing.includes(skill),
+  );
+
+  return [
+    ...new Map(
+      [...aiCandidates, ...localCandidates]
+        .filter((skill) => typeof skill === "string" && skill.trim())
+        .map((skill) => [normalize(skill), skill.trim()]),
+    ).values(),
+  ].slice(0, 12);
+}
+
+function renderStretchPanel(analysis) {
+  const candidates = stretchSkillCandidates(analysis);
+  const shouldShow = elements.exaggerateMode.checked && candidates.length > 0;
+  elements.stretchPanel.hidden = !shouldShow;
+  if (!shouldShow) {
+    elements.stretchCandidates.replaceChildren();
+    return;
+  }
+
+  elements.stretchCandidates.replaceChildren(
+    ...candidates.map((skill) => {
+      const label = document.createElement("label");
+      label.className = "stretch-option";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = skill;
+      checkbox.checked = confirmedStretchSkills.has(skill);
+      const text = document.createElement("span");
+      text.textContent = skill;
+      label.append(checkbox, text);
+      return label;
+    }),
+  );
+}
+
 function renderAnalysis(analysis) {
   elements.emptyState.hidden = true;
   elements.resultsContent.hidden = false;
@@ -1198,6 +1641,23 @@ function renderAnalysis(analysis) {
   );
   elements.coverageCount.textContent = `${analysis.matched.length} matched / ${analysis.missing.length} gaps`;
   renderKeywordSuggestions(analysis.recurringTerms);
+  renderStretchPanel(analysis);
+}
+
+function renderAndFitResume(title, analysis) {
+  renderResume(title, analysis);
+  elements.resumeSection.hidden = false;
+  elements.resumeSection.classList.add("is-fitting");
+  const resumeFits = fitResumeToPage();
+  elements.resumeSection.classList.remove("is-fitting");
+  if (!resumeFits) {
+    elements.resumeSection.hidden = true;
+    elements.inputError.textContent =
+      "The generated resume could not be fitted safely on one page. No clipped resume was shown.";
+    showToast("Resume withheld because it did not pass page-fit checks");
+    return false;
+  }
+  return true;
 }
 
 async function generate() {
@@ -1210,6 +1670,13 @@ async function generate() {
   }
 
   elements.inputError.textContent = "";
+  if (
+    confirmedSkillsDescription &&
+    confirmedSkillsDescription !== description
+  ) {
+    confirmedStretchSkills.clear();
+  }
+  confirmedSkillsDescription = description;
   const title = elements.targetTitle.value.trim() || inferTitle(description);
   elements.targetTitle.value = title;
   let analysis;
@@ -1246,19 +1713,10 @@ async function generate() {
         : "Generate tailored resume";
   }
 
+  lastGeneratedAnalysis = analysis;
+  lastGeneratedTitle = title;
   renderAnalysis(analysis);
-  renderResume(title, analysis);
-  elements.resumeSection.hidden = false;
-  elements.resumeSection.classList.add("is-fitting");
-  const resumeFits = fitResumeToPage();
-  elements.resumeSection.classList.remove("is-fitting");
-  if (!resumeFits) {
-    elements.resumeSection.hidden = true;
-    elements.inputError.textContent =
-      "The generated resume could not be fitted safely on one page. No clipped resume was shown.";
-    showToast("Resume withheld because it did not pass page-fit checks");
-    return;
-  }
+  if (!renderAndFitResume(title, analysis)) return;
   elements.resultsContent.animate(
     [
       { opacity: 0, transform: "translateY(12px)" },
@@ -1289,6 +1747,12 @@ elements.loadExample.addEventListener("click", () => {
 
 elements.generateButton.addEventListener("click", generate);
 
+elements.resumeLocation.addEventListener("change", () => {
+  if (!lastGeneratedAnalysis) return;
+  elements.inputError.textContent = "";
+  renderAndFitResume(lastGeneratedTitle, lastGeneratedAnalysis);
+});
+
 function setTailoringMode(mode) {
   tailoringMode = mode;
   const isGemini = mode === "gemini";
@@ -1313,6 +1777,46 @@ elements.toggleApiKey.addEventListener("click", () => {
   const shouldShow = elements.geminiApiKey.type === "password";
   elements.geminiApiKey.type = shouldShow ? "text" : "password";
   elements.toggleApiKey.textContent = shouldShow ? "Hide" : "Show";
+});
+
+elements.exaggerateMode.addEventListener("change", () => {
+  if (!elements.exaggerateMode.checked) {
+    confirmedStretchSkills.clear();
+    confirmedSkillsDescription = "";
+  }
+  if (!lastGeneratedAnalysis) return;
+  renderStretchPanel(lastGeneratedAnalysis);
+  if (!elements.exaggerateMode.checked) {
+    elements.inputError.textContent = "";
+    renderAndFitResume(lastGeneratedTitle, lastGeneratedAnalysis);
+  }
+});
+
+elements.applyStretchSkills.addEventListener("click", () => {
+  if (!lastGeneratedAnalysis) return;
+  const previous = new Set(confirmedStretchSkills);
+  const selected = [
+    ...elements.stretchCandidates.querySelectorAll("input:checked"),
+  ].map((input) => input.value);
+
+  confirmedStretchSkills.clear();
+  selected.forEach((skill) => confirmedStretchSkills.add(skill));
+  confirmedSkillsDescription = elements.jobDescription.value.trim();
+  elements.inputError.textContent = "";
+
+  if (!renderAndFitResume(lastGeneratedTitle, lastGeneratedAnalysis)) {
+    confirmedStretchSkills.clear();
+    previous.forEach((skill) => confirmedStretchSkills.add(skill));
+    renderAndFitResume(lastGeneratedTitle, lastGeneratedAnalysis);
+    showToast("Confirmed skills were not applied because they did not fit");
+    return;
+  }
+
+  showToast(
+    selected.length
+      ? `${selected.length} confirmed skill${selected.length === 1 ? "" : "s"} applied`
+      : "Unverified skills removed",
+  );
 });
 
 elements.saveKeywords.addEventListener("click", () => {
@@ -1380,6 +1884,244 @@ elements.downloadButton.addEventListener("click", () => {
   showToast("ATS-safe text resume downloaded");
 });
 
+function pdfSafeText(value) {
+  return String(value)
+    .replace(/[–—]/g, "-")
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/•/g, "-")
+    .replace(/[^\x20-\x7e]/g, "");
+}
+
+function pdfEscape(value) {
+  return pdfSafeText(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
+}
+
+function createTextPdfDocument() {
+  const pageWidth = 612;
+  const pageHeight = 792;
+  const marginX = 36;
+  const topY = 760;
+  const bottomY = 28;
+  const contentWidth = pageWidth - marginX * 2;
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  function textWidth(text, font, size) {
+    const weight = font === "F2" ? "700" : "400";
+    const style = font === "F3" ? "italic" : "normal";
+    context.font = `${style} ${weight} ${size}px Arial`;
+    return context.measureText(pdfSafeText(text)).width;
+  }
+
+  function wrapText(text, width, font, size) {
+    const words = pdfSafeText(text).trim().split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = "";
+    words.forEach((word) => {
+      const candidate = line ? `${line} ${word}` : word;
+      if (line && textWidth(candidate, font, size) > width) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    });
+    if (line) lines.push(line);
+    return lines.length ? lines : [""];
+  }
+
+  function layout(scale) {
+    const commands = [];
+    let y = topY;
+    const addText = (text, x, baseline, font, size) => {
+      commands.push(
+        `BT /${font} ${size.toFixed(2)} Tf 1 0 0 1 ${x.toFixed(2)} ${baseline.toFixed(2)} Tm (${pdfEscape(text)}) Tj ET`,
+      );
+    };
+    const addWrapped = (
+      text,
+      x,
+      width,
+      font = "F1",
+      size = 8.5,
+      lineHeight = 10.4,
+      indent = 0,
+    ) => {
+      const lines = wrapText(text, width - indent, font, size * scale);
+      lines.forEach((line, index) => {
+        addText(line, x + (index ? indent : 0), y, font, size * scale);
+        y -= lineHeight * scale;
+      });
+    };
+    const addTwoColumn = (left, right, font, size, lineHeight) => {
+      const rightWidth = textWidth(right, font, size * scale);
+      const maxLeftWidth = contentWidth - rightWidth - 18;
+      const leftLines = wrapText(left, maxLeftWidth, font, size * scale);
+      leftLines.forEach((line, index) => {
+        addText(line, marginX, y, font, size * scale);
+        if (index === 0 && right) {
+          addText(right, pageWidth - marginX - rightWidth, y, font, size * scale);
+        }
+        y -= lineHeight * scale;
+      });
+    };
+    const renderNode = (node) => {
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      const tag = node.tagName.toLowerCase();
+
+      if (tag === "div") {
+        [...node.children].forEach(renderNode);
+        return;
+      }
+      if (tag === "h1") {
+        const text = node.textContent.trim();
+        const size = 18 * scale;
+        y -= 2 * scale;
+        addText(text, (pageWidth - textWidth(text, "F2", size)) / 2, y, "F2", size);
+        y -= 18 * scale;
+        return;
+      }
+      if (node.classList.contains("resume-contact")) {
+        const text = node.textContent.trim();
+        const size = 8 * scale;
+        addText(text, (pageWidth - textWidth(text, "F1", size)) / 2, y, "F1", size);
+        y -= 11 * scale;
+        return;
+      }
+      if (tag === "h2") {
+        y -= 4 * scale;
+        const note = node.querySelector(".projects-note");
+        const heading = [...node.childNodes]
+          .filter((child) => child.nodeType === Node.TEXT_NODE)
+          .map((child) => child.textContent)
+          .join("")
+          .trim()
+          .toUpperCase();
+        addText(heading, marginX, y, "F2", 9.5 * scale);
+        if (note) {
+          const noteText = note.textContent.trim();
+          const noteX = marginX + textWidth(`${heading} `, "F2", 9.5 * scale);
+          addText(noteText, noteX, y, "F1", 6.8 * scale);
+        }
+        y -= 2.5 * scale;
+        commands.push(
+          `q 0 G 0.8 w ${marginX} ${y.toFixed(2)} m ${pageWidth - marginX} ${y.toFixed(2)} l S Q`,
+        );
+        y -= 9 * scale;
+        return;
+      }
+      if (tag === "h3") {
+        const spans = node.querySelectorAll(":scope > span");
+        addTwoColumn(
+          spans[0]?.textContent.trim() || node.textContent.trim(),
+          spans[1]?.textContent.trim() || "",
+          "F2",
+          8.5,
+          10,
+        );
+        return;
+      }
+      if (node.classList.contains("subline")) {
+        const spans = node.querySelectorAll(":scope > span");
+        addTwoColumn(
+          spans[0]?.textContent.trim() || node.textContent.trim(),
+          spans[1]?.textContent.trim() || "",
+          "F3",
+          8.1,
+          9.5,
+        );
+        return;
+      }
+      if (tag === "ul") {
+        [...node.querySelectorAll(":scope > li")].forEach((item) => {
+          const size = 8.3 * scale;
+          const lines = wrapText(item.textContent.trim(), contentWidth - 13, "F1", size);
+          lines.forEach((line, index) => {
+            if (index === 0) addText("-", marginX + 2, y, "F1", size);
+            addText(line, marginX + 13, y, "F1", size);
+            y -= 9.7 * scale;
+          });
+        });
+        y -= 1.5 * scale;
+        return;
+      }
+      if (tag === "p") {
+        if (node.classList.contains("skills-line")) {
+          const label = node.querySelector("strong")?.textContent.trim() || "";
+          const value = node.querySelector("span")?.textContent.trim() || "";
+          const size = 8.25 * scale;
+          const labelWidth = textWidth(`${label} `, "F2", size);
+          const lines = wrapText(value, contentWidth - labelWidth, "F1", size);
+          lines.forEach((line, index) => {
+            if (index === 0) addText(label, marginX, y, "F2", size);
+            addText(line, marginX + (index === 0 ? labelWidth : 0), y, "F1", size);
+            y -= 9.6 * scale;
+          });
+        } else {
+          addWrapped(node.textContent.trim(), marginX, contentWidth);
+        }
+        return;
+      }
+    };
+
+    [...elements.resumePreview.children].forEach(renderNode);
+    return { commands, fits: y >= bottomY, finalY: y, scale };
+  }
+
+  let minimumScale = 0.72;
+  let maximumScale = 1.35;
+  let rendered = layout(minimumScale);
+  if (!rendered.fits) {
+    throw new Error("The resume could not be fitted into a one-page text PDF.");
+  }
+
+  for (let iteration = 0; iteration < 16; iteration += 1) {
+    const candidateScale = (minimumScale + maximumScale) / 2;
+    const candidate = layout(candidateScale);
+    if (candidate.fits) {
+      rendered = candidate;
+      minimumScale = candidateScale;
+    } else {
+      maximumScale = candidateScale;
+    }
+  }
+
+  const stream = [
+    `% Layout scale ${rendered.scale.toFixed(4)}, bottom ${rendered.finalY.toFixed(2)}`,
+    ...rendered.commands,
+  ].join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 4 0 R /F2 5 0 R /F3 6 0 R >> >> /Contents 7 0 R >>`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>",
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  return pdf;
+}
+
+function createTextPdfBlob() {
+  return new Blob([createTextPdfDocument()], { type: "application/pdf" });
+}
+
 elements.printButton.addEventListener("click", () => {
   elements.resumeSection.classList.add("is-fitting");
   const resumeFits = fitResumeToPage();
@@ -1388,5 +2130,18 @@ elements.printButton.addEventListener("click", () => {
     showToast("Print blocked: the edited resume does not fit on one page");
     return;
   }
-  window.print();
+  try {
+    const title = elements.targetTitle.value
+      .trim()
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-|-$/g, "");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(createTextPdfBlob());
+    link.download = `John-Nesnidal-${title || "Tailored-Resume"}.pdf`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast("Selectable-text PDF downloaded");
+  } catch (error) {
+    showToast(error.message);
+  }
 });

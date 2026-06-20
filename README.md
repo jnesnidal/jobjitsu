@@ -5,11 +5,26 @@ A local-first resume tailoring app. Paste a job description and MatchCraft:
 - detects hard skills, responsibilities, aliases, and multi-word technical phrases;
 - weights required qualifications more heavily than general job-posting text;
 - identifies supported and unsupported keywords;
+- builds an ATS-oriented skills section using exact job priorities, normalized
+  terminology, conventional technical categories, and alias deduplication;
+- attempts to include up to ten evidence-backed adjacent skills from relevant
+  technical categories, subject to the one-page fit limit;
+- guarantees at least 15 evidence-backed hard skills and prevents page fitting
+  from trimming below that floor;
+- consolidates skills into four ATS-readable rows: Languages, Technologies,
+  Data & Cloud, and Soft Skills;
+- recognizes 100 soft skills and includes up to four employer-requested traits
+  when the source resume contains supporting evidence;
+- offers an Exaggerate mode that requires explicit confirmation before adding
+  unsupported job skills;
 - suggests recurring job-description terms to add to a browser-persistent keyword database;
 - ranks existing experience and projects by relevance;
 - generates an editable, single-column ATS-friendly resume that measures the
   Letter page and retains as much relevant content as fits;
-- exports plain text or a print-ready PDF.
+- optionally adds Minneapolis, Jordan ZIP, or full Jordan street-address
+  location text to the contact line;
+- exports plain text or a one-page PDF made from selectable text and vector
+  lines, without rasterized resume content.
 
 ## Gemini mode
 
