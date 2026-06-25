@@ -1,50 +1,31 @@
-# MatchCraft
+# Resumejitsu
 
-A local-first resume tailoring app. Paste a job description and MatchCraft:
+Resumejitsu is a local-first static web app for tailoring a resume to a pasted
+job description with OpenAI.
 
-- detects hard skills, responsibilities, aliases, and multi-word technical phrases;
-- weights required qualifications more heavily than general job-posting text;
-- identifies supported and unsupported keywords;
-- builds an ATS-oriented skills section using exact job priorities, normalized
-  terminology, conventional technical categories, and alias deduplication;
-- attempts to include up to ten evidence-backed adjacent skills from relevant
-  technical categories, subject to the one-page fit limit;
-- guarantees at least 15 evidence-backed hard skills and prevents page fitting
-  from trimming below that floor;
-- consolidates skills into four ATS-readable rows: Languages, Technologies,
-  Data & Cloud, and Soft Skills;
-- recognizes 100 soft skills and includes up to four employer-requested traits
-  when the source resume contains supporting evidence;
-- offers an Exaggerate mode that requires explicit confirmation before adding
-  unsupported job skills;
-- suggests recurring job-description terms to add to a browser-persistent keyword database;
-- ranks existing experience and projects by relevance;
-- generates an editable, single-column ATS-friendly resume that measures the
-  Letter page and retains as much relevant content as fits;
-- optionally adds Minneapolis, Jordan ZIP, or full Jordan street-address
-  location text to the contact line;
-- exports plain text or a one-page PDF made from selectable text and vector
-  lines, without rasterized resume content.
+## Workflow
 
-## Gemini mode
+1. Upload an existing resume. TXT and DOCX are supported directly; PDF parsing is
+   best-effort.
+2. Add optional extra context, such as projects, metrics, tools, certifications,
+   or location preferences.
+3. Build a structured knowledge base from the resume plus extra context.
+4. Paste a job description and analyze the ATS score.
+5. Tailor the resume bullets with exact job-description keywords.
+6. Edit the one-page preview, refit it, copy it, download text, or print/save PDF.
 
-Gemini mode uses `gemini-3.5-flash` to perform semantic keyword extraction and
-truth-preserving resume rewording. Paste a Gemini API key into the app; the key
-is held only in memory for the current tab and is not stored.
+## OpenAI
 
-Temporary Gemini capacity failures are retried with exponential backoff. If
-`gemini-3.5-flash` remains unavailable, the app automatically tries
-`gemini-2.5-flash`.
+The app calls the OpenAI Responses API from the browser:
 
-The static app calls the Gemini API directly for local use. Do not deploy this
-client-side key flow to production. Use a backend proxy and keep the API key in
-an environment variable or secret manager.
+- Endpoint: `https://api.openai.com/v1/responses`
+- Default model: `gpt-5.5`
+- The API key is entered in the UI. It stays in memory unless "Remember key
+  locally" is checked.
 
-The generator does not fabricate qualifications or silently insert unsupported
-keywords. Its score is a transparent alignment estimate, not a guarantee from a
-specific applicant tracking system.
+Do not deploy this as a public website with a shared API key. For production,
+proxy OpenAI requests through a server you control.
 
-## Run
+## Legacy App
 
-Open `index.html` in a modern browser. No installation, build step, account, or
-API key is required.
+The previous MatchCraft app has been moved to `legacy-matchcraft/`.
