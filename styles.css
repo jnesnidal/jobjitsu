@@ -16,6 +16,10 @@
   --resume-font-size: 10.4pt;
   --resume-line-height: 1.22;
   --resume-section-gap: 8px;
+  --resume-padding-y: 48px;
+  --resume-padding-x: 48px;
+  --resume-bullet-indent: 12px;
+  --resume-bullet-padding: 0;
   --display-font: "Franklin Gothic Heavy", "Arial Narrow Bold", "Avenir Next Condensed", sans-serif;
 }
 
@@ -202,7 +206,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border: 1px solid rgba(199, 139, 255, 0.24);
   border-radius: 16px;
@@ -211,7 +216,8 @@ textarea {
   outline: none;
 }
 
-input {
+input,
+select {
   min-height: 44px;
   padding: 0 13px;
 }
@@ -227,7 +233,8 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   border-color: var(--purple-2);
   box-shadow: 0 0 0 4px rgba(143, 70, 255, 0.18);
 }
@@ -240,20 +247,60 @@ textarea:focus {
   align-items: center;
 }
 
+.button-row {
+  flex-wrap: nowrap;
+}
+
+.button-row > button {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.button-row > .primary-button {
+  flex: 1.1 1 0;
+}
+
+.button-row > .secondary-button {
+  margin-top: 0;
+}
+
 .secret-row input {
   flex: 1;
 }
 
 .inline-row {
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
-.inline-row label:not(.checkline) {
-  margin-left: auto;
+.inline-row .checkline {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-top: 0;
 }
 
-.inline-row input[type="text"] {
-  width: 130px;
+.inline-row label[for="model"] {
+  margin: 0;
+  white-space: nowrap;
+}
+
+#model {
+  width: 176px;
+  flex: 0 0 176px;
+  min-height: 44px;
+  padding-right: 34px;
+  font-size: 0.9rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--purple-2) 50%),
+    linear-gradient(135deg, var(--purple-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 17px) 18px,
+    calc(100% - 11px) 18px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
 }
 
 .checkline {
@@ -273,12 +320,16 @@ textarea:focus {
 .primary-button,
 .secondary-button,
 .ghost-button {
+  position: relative;
+  z-index: 0;
   min-height: 42px;
   border: 0;
   border-radius: 999px;
   padding: 0 16px;
   color: white;
   font-weight: 900;
+  isolation: isolate;
+  overflow: visible;
 }
 
 .primary-button {
@@ -420,7 +471,7 @@ button:disabled {
   max-height: 1056px;
   margin: 0 auto;
   overflow: hidden;
-  padding: 48px 56px;
+  padding: var(--resume-padding-y) var(--resume-padding-x);
   color: var(--paper-ink);
   background: var(--paper);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
@@ -495,8 +546,18 @@ button:disabled {
   gap: 12px;
 }
 
+.entry-head span:first-child,
+.entry-subhead span:first-child {
+  min-width: 0;
+}
+
 .entry-head {
   font-weight: 800;
+}
+
+.entry-head span:empty,
+.entry-subhead span:empty {
+  display: none;
 }
 
 .entry-subhead {
@@ -506,13 +567,13 @@ button:disabled {
 }
 
 .resume-paper ul {
-  margin: 2px 0 0 15px;
+  margin: 2px 0 0 var(--resume-bullet-indent);
   padding: 0;
 }
 
 .resume-paper li {
   margin: 0 0 2px;
-  padding-left: 1px;
+  padding-left: var(--resume-bullet-padding);
 }
 
 .toast {
@@ -567,6 +628,20 @@ button:disabled {
     flex-direction: column;
   }
 
+  .button-row > button {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .inline-row {
+    flex-wrap: wrap;
+  }
+
+  #model {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
   .paper-wrap {
     padding: 10px;
   }
@@ -580,7 +655,12 @@ button:disabled {
 }
 
 @media print {
+  html,
   body {
+    width: 8.5in;
+    height: 10.98in;
+    margin: 0;
+    overflow: hidden;
     background: white;
   }
 
@@ -594,14 +674,21 @@ button:disabled {
   }
 
   .resume-paper {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 8.5in;
-    min-height: 11in;
-    max-height: none;
+    height: 10.98in;
+    min-height: 0;
+    max-height: 10.98in;
+    margin: 0;
     padding: 0.45in 0.52in;
+    overflow: hidden;
+    transform: none;
+    border: 0;
     box-shadow: none;
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   @page {

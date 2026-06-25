@@ -1,6 +1,6 @@
-# Resumejitsu
+# ResumeJitsu ATS Tailoring Dojo
 
-Resumejitsu is a local-first static web app for tailoring a resume to a pasted
+ResumeJitsu is a local-first static web app for tailoring a resume to a pasted
 job description with OpenAI.
 
 ## Workflow

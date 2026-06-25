@@ -254,6 +254,153 @@ function unique(values) {
   return [...new Map(values.filter(Boolean).map((value) => [normalize(value), value])).values()];
 }
 
+const skillTokenMap = new Map(
+  Object.entries({
+    ai: "AI",
+    ml: "ML",
+    nlp: "NLP",
+    sql: "SQL",
+    nosql: "NoSQL",
+    api: "API",
+    apis: "APIs",
+    rest: "REST",
+    restful: "RESTful",
+    graphql: "GraphQL",
+    html: "HTML",
+    css: "CSS",
+    javascript: "JavaScript",
+    typescript: "TypeScript",
+    nodejs: "Node.js",
+    "node.js": "Node.js",
+    nextjs: "Next.js",
+    "next.js": "Next.js",
+    reactjs: "React",
+    react: "React",
+    vuejs: "Vue",
+    vue: "Vue",
+    angularjs: "Angular",
+    angular: "Angular",
+    dotnet: ".NET",
+    ".net": ".NET",
+    "asp.net": "ASP.NET",
+    csharp: "C#",
+    "c#": "C#",
+    cpp: "C++",
+    "c++": "C++",
+    aws: "AWS",
+    gcp: "GCP",
+    azure: "Azure",
+    ci: "CI",
+    cd: "CD",
+    cicd: "CI/CD",
+    devops: "DevOps",
+    ios: "iOS",
+    android: "Android",
+    powerbi: "Power BI",
+    github: "GitHub",
+    gitlab: "GitLab",
+    jira: "Jira",
+    postgresql: "PostgreSQL",
+    mysql: "MySQL",
+    mongodb: "MongoDB",
+    redis: "Redis",
+    docker: "Docker",
+    kubernetes: "Kubernetes",
+    tableau: "Tableau",
+    pandas: "Pandas",
+    numpy: "NumPy",
+    pytorch: "PyTorch",
+    tensorflow: "TensorFlow",
+    openai: "OpenAI",
+    githubactions: "GitHub Actions",
+  }),
+);
+
+function formatSkillToken(token) {
+  const cleaned = String(token || "").trim();
+  if (!cleaned) return "";
+  const normalized = cleaned.toLowerCase().replace(/\s+/g, "");
+  if (skillTokenMap.has(normalized)) return skillTokenMap.get(normalized);
+  if (/^[A-Z0-9][A-Za-z0-9.+/#-]*$/.test(cleaned) && /[A-Z]/.test(cleaned.slice(1))) {
+    return cleaned;
+  }
+  if (/^[A-Z]{2,}(?:\/[A-Z]{2,})+$/.test(cleaned)) return cleaned;
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
+}
+
+function formatSkillLabel(skill) {
+  return String(skill || "")
+    .trim()
+    .split(/(\s+|\/|-|\(|\))/)
+    .map((part) => (/^\s+$|^[/()\-]$/.test(part) ? part : formatSkillToken(part)))
+    .join("")
+    .replace(/\bAnd\b/g, "and");
+}
+
+const keywordRejectPhrases = new Set([
+  "required",
+  "preferred",
+  "strongly preferred",
+  "optional",
+  "nice to have",
+  "nice-to-have",
+  "plus",
+  "bonus",
+  "minimum qualifications",
+  "preferred qualifications",
+  "responsibilities",
+  "requirements",
+  "qualifications",
+  "equal opportunity",
+  "competitive benefits",
+  "paid time off",
+  "health insurance",
+]);
+
+const keywordRejectPatterns = [
+  /\b(strongly\s+)?preferred\b/i,
+  /\b(optional|nice[-\s]?to[-\s]?have|bonus|plus)\b/i,
+  /\b(required|requirements?|qualifications?|responsibilit(?:y|ies))\b/i,
+  /\b(equal opportunity|work authorization|sponsorship|background check)\b/i,
+  /\b(benefits?|insurance|salary|compensation|pto|paid time off|401k)\b/i,
+  /\b(bachelor'?s|masters?|master'?s|phd|doctorate|associate'?s)\s+(degree|preferred|required)?\b/i,
+  /\bdegree\s+(in|preferred|required)\b/i,
+  /\b(high school diploma|ged|college degree)\b/i,
+];
+
+const roleTitlePattern =
+  /\b(senior|sr\.?|junior|jr\.?|staff|principal|lead|associate|entry[-\s]?level)?\s*(software|systems?|data|business|product|project|program|qa|quality|devops|cloud|security|frontend|front[-\s]?end|backend|back[-\s]?end|full[-\s]?stack)?\s*(engineer|developer|analyst|manager|specialist|administrator|architect|consultant|coordinator|intern|lead)\b/i;
+
+function isLikelyNonKeyword(term, category, jobTitle = "") {
+  const value = String(term || "").trim();
+  const normalized = normalize(value);
+  if (!normalized || normalized.length < 2) return true;
+  if (keywordRejectPhrases.has(normalized)) return true;
+  if (normalize(jobTitle) && normalized === normalize(jobTitle)) return true;
+  if (keywordRejectPatterns.some((pattern) => pattern.test(value))) return true;
+  if (category !== "responsibility" && roleTitlePattern.test(value)) return true;
+  return false;
+}
+
+function cleanAnalysisKeywords(analysis) {
+  const seen = new Set();
+  const keywords = (analysis.keywords || [])
+    .filter((keyword) => keyword && typeof keyword.term === "string")
+    .map((keyword) => ({ ...keyword, term: keyword.term.trim() }))
+    .filter((keyword) => !isLikelyNonKeyword(keyword.term, keyword.category, analysis.jobTitle))
+    .filter((keyword) => {
+      const key = normalize(keyword.term);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  return { ...analysis, keywords };
+}
+
+function isRenderableSkill(skill) {
+  return !isLikelyNonKeyword(skill, "hard_skill", latestAnalysis?.jobTitle || "");
+}
+
 function setStatus(message) {
   elements.statusLine.textContent = message;
 }
@@ -307,14 +454,42 @@ function restoreSessionState() {
 function textFromResponse(payload) {
   if (typeof payload?.output_text === "string") return payload.output_text;
   if (typeof payload?.outputText === "string") return payload.outputText;
-  if (!Array.isArray(payload?.output)) return "";
-  return payload.output
-    .flatMap((item) =>
-      Array.isArray(item?.content)
-        ? item.content.map((content) => content?.text || content?.value || "")
-        : [],
-    )
+  if (typeof payload?.text === "string") return payload.text;
+  const outputText = Array.isArray(payload?.output)
+    ? payload.output
+        .flatMap((item) =>
+          Array.isArray(item?.content)
+            ? item.content.map((content) => content?.text || content?.value || "")
+            : [],
+        )
+        .join("")
+    : "";
+  if (outputText) return outputText;
+  return (payload.candidates || [])
+    .flatMap((candidate) => candidate?.content?.parts?.map((part) => part.text || "") || [])
     .join("");
+}
+
+function stripJsonFences(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+}
+
+function parseJsonResponse(value) {
+  const text = stripJsonFences(value);
+  try {
+    return JSON.parse(text);
+  } catch {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(text.slice(start, end + 1));
+    }
+    throw new Error("OpenAI returned malformed JSON. Try again.");
+  }
 }
 
 async function callOpenAI({ name, schema, developer, user }) {
@@ -353,18 +528,17 @@ async function callOpenAI({ name, schema, developer, user }) {
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const message = payload?.error?.message || `OpenAI request failed with status ${response.status}.`;
+    const message =
+      payload?.error?.message ||
+      payload?.message ||
+      `OpenAI request failed with status ${response.status}.`;
     throw new Error(message);
   }
 
   const text = textFromResponse(payload);
   if (!text) throw new Error("OpenAI returned no JSON content.");
 
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new Error("OpenAI returned malformed JSON. Try again.");
-  }
+  return parseJsonResponse(text);
 }
 
 async function readFileAsArrayBuffer(file) {
@@ -486,7 +660,8 @@ async function buildKnowledgeBase() {
   knowledgeBase = await callOpenAI({
     name: "resumejitsu_knowledge_base",
     schema: knowledgeBaseSchema,
-    ...prompt,
+    developer: prompt.developer,
+    user: prompt.user,
   });
   saveSessionState();
   renderKnowledgePreview();
@@ -562,8 +737,27 @@ function scoreKeywords(keywords) {
 function buildAnalysisPrompt() {
   return {
     developer:
-      "You are an ATS keyword analyst. Extract exact, meaningful keywords and short phrases from the job description. Favor exact employer terminology over synonyms. Compare against the candidate knowledge base, but never mark a keyword supported unless the knowledge base provides direct or strongly equivalent evidence.",
-    user: `Candidate knowledge base:\n${JSON.stringify(knowledgeBase, null, 2)}\n\nRaw resume and notes:\n${flattenKnowledge()}\n\nJob description:\n${elements.jobDescription.value.trim()}\n\nReturn 22 to 36 ATS-relevant keywords. Include hard skills, tools, responsibilities, credentials, domains, and important soft skills. Use exact wording from the job description in each keyword term.`,
+      "You are an ATS keyword analyst. Extract only high-signal ATS keywords: concrete tools, platforms, programming languages, frameworks, methods, domains, certifications, and specific responsibilities. Favor exact employer terminology over synonyms. Do not extract job titles, degree names, preference labels, section headings, benefits, generic filler, or standalone words that are not searchable candidate qualifications. Compare against the candidate knowledge base, but never mark a keyword supported unless the knowledge base provides direct or strongly equivalent evidence.",
+    user: `Candidate knowledge base:\n${JSON.stringify(knowledgeBase, null, 2)}\n\nRaw resume and notes:\n${flattenKnowledge()}\n\nJob description:\n${elements.jobDescription.value.trim()}\n\nReturn 18 to 30 ATS-relevant keywords. Use exact wording from the job description in each keyword term.
+
+Good keyword examples:
+- React
+- TypeScript
+- REST APIs
+- SQL
+- data visualization
+- stakeholder communication
+- CI/CD
+- cloud-based applications
+- Agile development
+
+Do not return:
+- job titles such as Software Engineer, Data Analyst, Project Manager, or Intern
+- degree phrases such as bachelor's degree, master's degree, degree in computer science, or high school diploma
+- preference wording such as strongly preferred, optional, nice to have, required, plus, or bonus
+- headings such as responsibilities, qualifications, requirements, minimum qualifications, or preferred qualifications
+- benefits, compensation, location, work authorization, or equal opportunity language
+- vague filler such as strong, excellent, ability, team, successful, motivated, fast-paced, or communication by itself`,
   };
 }
 
@@ -580,11 +774,13 @@ async function analyzeJob() {
   const aiAnalysis = await callOpenAI({
     name: "resumejitsu_ats_analysis",
     schema: analysisSchema,
-    ...prompt,
+    developer: prompt.developer,
+    user: prompt.user,
   });
+  const cleanedAnalysis = cleanAnalysisKeywords(aiAnalysis);
   latestAnalysis = {
-    ...aiAnalysis,
-    ...scoreKeywords(aiAnalysis.keywords || []),
+    ...cleanedAnalysis,
+    ...scoreKeywords(cleanedAnalysis.keywords || []),
   };
   renderAnalysis();
   elements.tailorButton.disabled = false;
@@ -593,13 +789,21 @@ async function analyzeJob() {
 }
 
 function buildTailoringPrompt() {
-  const supportedKeywords = latestAnalysis.keywords
-    .filter((keyword) => keyword.status !== "missing")
+  const exactKeywords = latestAnalysis.keywords
+    .filter((keyword) => keyword.status === "exact")
     .map((keyword) => ({
       term: keyword.term,
-      status: keyword.status,
       importance: keyword.importance,
       evidence: keyword.resumeEvidence,
+    }));
+
+  const closeKeywords = latestAnalysis.keywords
+    .filter((keyword) => keyword.status === "close")
+    .map((keyword) => ({
+      term: keyword.term,
+      importance: keyword.importance,
+      evidence: keyword.resumeEvidence,
+      whyItMatters: keyword.whyItMatters,
     }));
 
   const missingKeywords = latestAnalysis.keywords
@@ -608,34 +812,52 @@ function buildTailoringPrompt() {
 
   return {
     developer:
-      "You are a truthful resume editor. Rephrase bullets to use exact job-description keywords only when the candidate knowledge base supports them. Do not invent skills, employers, dates, credentials, metrics, tools, outcomes, or responsibilities. Keep the resume concise enough for one page.",
+      "You are a truthful resume editor. Your main job is to convert close-but-not-exact resume language into the exact job-description keywords when the candidate knowledge base already supports those terms. Prefer replacing nearby synonyms and generic wording with exact employer terminology instead of merely adding keywords. Do not invent skills, employers, dates, credentials, metrics, tools, outcomes, or responsibilities. Keep the resume concise enough for one page.",
     user: `Candidate knowledge base:\n${JSON.stringify(
       knowledgeBase,
       null,
       2,
     )}\n\nTarget job title: ${latestAnalysis.jobTitle}\nCompany: ${
       latestAnalysis.company
-    }\n\nSupported exact/close keywords to use where truthful:\n${JSON.stringify(
-      supportedKeywords,
+    }\n\nAlready exact keywords. Keep them when useful, but do not spend rewrite effort on them first:\n${JSON.stringify(
+      exactKeywords,
+      null,
+      2,
+    )}\n\nClose-but-not-exact keywords. These are the highest-priority rewrite targets. Rephrase as many supported resume phrases as possible into these exact job-description terms:\n${JSON.stringify(
+      closeKeywords,
       null,
       2,
     )}\n\nMissing keywords that must NOT be inserted as claims:\n${JSON.stringify(
       missingKeywords,
       null,
       2,
-    )}\n\nCreate a tailored one-page resume. Use 2 to 4 bullets for recent experience, 1 to 3 bullets for projects, and a compact ATS-readable skills section. Put work experience in reverse chronological order when dates are available.`,
+    )}\n\nCreate a tailored one-page resume.
+
+Rewrite rules:
+1. Prioritize converting close matches into exact job-description wording.
+2. Replace generic verbs, tools, and responsibility phrases with exact close-keyword terms whenever the knowledge base supports them.
+3. Try to use as many close-keyword terms as possible across summary, skills, experience, and projects without making the writing unnatural.
+4. Do not force missing keywords into the resume.
+5. Keep bullets factual, readable, and concise.
+
+Formatting rules:
+- Use 2 to 4 bullets for recent experience.
+- Use 1 to 3 bullets for projects.
+- Keep the skills section compact and ATS-readable.
+- Put work experience in reverse chronological order when dates are available.`,
   };
 }
 
 async function tailorResume() {
   if (!latestAnalysis) await analyzeJob();
 
-  setStatus("Tailoring resume bullets with exact supported keywords...");
+  setStatus("Tailoring resume bullets toward close-match exact keywords...");
   const prompt = buildTailoringPrompt();
   latestTailoredResume = await callOpenAI({
     name: "resumejitsu_tailored_resume",
     schema: tailoredResumeSchema,
-    ...prompt,
+    developer: prompt.developer,
+    user: prompt.user,
   });
   renderResume(latestTailoredResume);
   fitResumeToPage();
@@ -691,20 +913,34 @@ function renderAnalysis() {
 
 function renderSkills(skills) {
   return Object.entries(skills)
-    .filter(([, values]) => values?.length)
+    .map(([category, values]) => [
+      category,
+      unique(values || [])
+        .filter(isRenderableSkill)
+        .map(formatSkillLabel),
+    ])
+    .filter(([, values]) => values.length)
     .map(
       ([category, values]) =>
         `<p class="skills-line"><strong>${escapeHtml(category)}:</strong> ${escapeHtml(
-          unique(values).join(", "),
+          values.join(", "),
         )}</p>`,
     )
     .join("");
 }
 
+function projectTechLine(entry) {
+  return unique(entry.technologies || [])
+    .map(formatSkillLabel)
+    .slice(0, 5)
+    .join(", ");
+}
+
 function renderEntry(entry, type) {
   const title = type === "project" ? entry.name : entry.company;
-  const right = type === "project" ? (entry.technologies || []).join(", ") : entry.dates;
-  const subLeft = type === "project" ? entry.subtitle : entry.title;
+  const right = type === "project" ? "" : entry.dates;
+  const projectTech = type === "project" ? projectTechLine(entry) : "";
+  const subLeft = type === "project" && projectTech ? `${entry.subtitle} | ${projectTech}` : type === "project" ? entry.subtitle : entry.title;
   const subRight = type === "project" ? "" : entry.location;
   const bullets = (entry.bullets || [])
     .map((bullet, index) => `<li data-trim="${index > 0 ? "optional" : "keep"}">${escapeHtml(bullet)}</li>`)
@@ -763,10 +999,18 @@ function renderResume(resume) {
   `;
 }
 
-function setFitVariables({ fontSize, lineHeight, gap }) {
+function setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding }) {
   elements.resumePreview.style.setProperty("--resume-font-size", `${fontSize}pt`);
   elements.resumePreview.style.setProperty("--resume-line-height", lineHeight);
   elements.resumePreview.style.setProperty("--resume-section-gap", `${gap}px`);
+  if (paddingX) elements.resumePreview.style.setProperty("--resume-padding-x", `${paddingX}px`);
+  if (paddingY) elements.resumePreview.style.setProperty("--resume-padding-y", `${paddingY}px`);
+  if (bulletIndent) {
+    elements.resumePreview.style.setProperty("--resume-bullet-indent", `${bulletIndent}px`);
+  }
+  if (bulletPadding !== undefined) {
+    elements.resumePreview.style.setProperty("--resume-bullet-padding", `${bulletPadding}px`);
+  }
 }
 
 function pageOverflow() {
@@ -782,13 +1026,24 @@ function fitResumeToPage() {
   let fontSize = 10.4;
   let lineHeight = 1.22;
   let gap = 8;
-  setFitVariables({ fontSize, lineHeight, gap });
+  let paddingX = 48;
+  let paddingY = 48;
+  let bulletIndent = 12;
+  let bulletPadding = 0;
+  setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
+
+  for (let attempt = 0; attempt < 6 && pageOverflow() > 0; attempt += 1) {
+    paddingX = Math.max(40, paddingX - 1.5);
+    bulletIndent = Math.max(9, bulletIndent - 0.5);
+    setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
+  }
 
   for (let attempt = 0; attempt < 24 && pageOverflow() > 0; attempt += 1) {
     fontSize = Math.max(8.6, fontSize - 0.12);
     lineHeight = Math.max(1.12, lineHeight - 0.004);
     gap = Math.max(4, gap - 0.25);
-    setFitVariables({ fontSize, lineHeight, gap });
+    paddingX = Math.max(38, paddingX - 0.4);
+    setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
   }
 
   const removable = [
@@ -807,15 +1062,15 @@ function fitResumeToPage() {
 
   while (pageOverflow() > 0 && fontSize > 7.8) {
     fontSize -= 0.1;
-    setFitVariables({ fontSize, lineHeight, gap });
+    setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
   }
 
   while (elements.resumePreview.clientHeight - elements.resumePreview.scrollHeight > 30 && fontSize < 11.3) {
     fontSize += 0.08;
-    setFitVariables({ fontSize, lineHeight, gap });
+    setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
     if (pageOverflow() > 0) {
       fontSize -= 0.08;
-      setFitVariables({ fontSize, lineHeight, gap });
+      setFitVariables({ fontSize, lineHeight, gap, paddingX, paddingY, bulletIndent, bulletPadding });
       break;
     }
   }

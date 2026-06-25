@@ -8,7 +8,7 @@
       content="ResumeJitsu turns an uploaded resume and pasted job description into an editable, ATS-focused one-page resume."
     />
     <title>ResumeJitsu</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260625-3" />
   </head>
   <body>
     <main class="shell">
@@ -49,8 +49,19 @@
                 <input id="rememberKey" type="checkbox" />
                 Remember key locally
               </label>
-              <label for="model">Model</label>
-              <input id="model" type="text" value="gpt-5.5" />
+              <label for="model">OpenAI model</label>
+              <select id="model">
+                <option value="gpt-5.5" selected>gpt-5.5</option>
+                <option value="gpt-5.1">gpt-5.1</option>
+                <option value="gpt-5">gpt-5</option>
+                <option value="gpt-5.4">gpt-5.4</option>
+                <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
+                <option value="gpt-4o">gpt-4o</option>
+                <option value="gpt-4o-mini">gpt-4o-mini</option>
+              </select>
             </div>
           </div>
 
@@ -99,7 +110,7 @@
                 Analyze ATS score
               </button>
               <button id="tailorButton" type="button" class="secondary-button" disabled>
-                Tailor resume bullets
+                Tailor resume
               </button>
             </div>
             <p id="statusLine" class="status-line" role="status"></p>
@@ -174,6 +185,6 @@
     </main>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="app.js?v=20260624-1"></script>
+    <script src="app.js?v=20260625-5"></script>
   </body>
 </html>
