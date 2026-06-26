@@ -25,7 +25,3 @@ The app calls the OpenAI Responses API from the browser:
 
 Do not deploy this as a public website with a shared API key. For production,
 proxy OpenAI requests through a server you control.
-
-## Legacy App
-
-The previous MatchCraft app has been moved to `legacy-matchcraft/`.
