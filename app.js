@@ -7,6 +7,7 @@ const elements = {
   fileStatus: document.querySelector("#fileStatus"),
   extraInfo: document.querySelector("#extraInfo"),
   buildKnowledge: document.querySelector("#buildKnowledge"),
+  clearKnowledge: document.querySelector("#clearKnowledge"),
   knowledgePreview: document.querySelector("#knowledgePreview"),
   jobDescription: document.querySelector("#jobDescription"),
   analyzeButton: document.querySelector("#analyzeButton"),
@@ -422,6 +423,8 @@ function saveSessionState() {
   localStorage.setItem(storageKeys.extraInfo, elements.extraInfo.value);
   if (knowledgeBase) {
     localStorage.setItem(storageKeys.knowledgeBase, JSON.stringify(knowledgeBase));
+  } else {
+    localStorage.removeItem(storageKeys.knowledgeBase);
   }
   if (rawResumeText) {
     localStorage.setItem(storageKeys.rawResume, rawResumeText);
@@ -670,6 +673,19 @@ async function buildKnowledgeBase() {
   return knowledgeBase;
 }
 
+function resetAnalysisPreview() {
+  latestAnalysis = null;
+  elements.heroScore.textContent = "0%";
+  elements.atsScore.textContent = "0%";
+  elements.exactCount.textContent = "0";
+  elements.closeCount.textContent = "0";
+  elements.scoreNote.textContent = "Analyze a job description to begin.";
+  elements.exactKeywords.innerHTML = "<span class='chip chip-placeholder'>None yet</span>";
+  elements.closeKeywords.innerHTML = "<span class='chip chip-placeholder'>None yet</span>";
+  elements.missingKeywords.innerHTML = "<span class='chip chip-placeholder'>None yet</span>";
+  elements.tailorButton.disabled = true;
+}
+
 function flattenKnowledge() {
   return [rawResumeText, elements.extraInfo.value, JSON.stringify(knowledgeBase || {})]
     .filter(Boolean)
@@ -884,6 +900,18 @@ function renderKnowledgePreview() {
   `;
 }
 
+function clearKnowledgeBase() {
+  knowledgeBase = null;
+  latestAnalysis = null;
+  latestTailoredResume = null;
+  localStorage.removeItem(storageKeys.knowledgeBase);
+  renderKnowledgePreview();
+  resetAnalysisPreview();
+  saveSessionState();
+  setStatus("Knowledge base cleared.");
+  showToast("Knowledge base cleared");
+}
+
 function chip(keyword) {
   return `<span class="chip ${keyword.status}" title="${escapeHtml(
     keyword.whyItMatters || "",
@@ -906,8 +934,10 @@ function renderAnalysis() {
         ? "Good evidence, but exact terminology can improve."
         : "Important exact job-description terms are missing.";
 
-  elements.exactKeywords.innerHTML = exact.map(chip).join("") || "<span class='chip'>None yet</span>";
-  elements.closeKeywords.innerHTML = close.map(chip).join("") || "<span class='chip'>None yet</span>";
+  elements.exactKeywords.innerHTML =
+    exact.map(chip).join("") || "<span class='chip chip-placeholder'>None yet</span>";
+  elements.closeKeywords.innerHTML =
+    close.map(chip).join("") || "<span class='chip chip-placeholder'>None yet</span>";
   elements.missingKeywords.innerHTML =
     missing.map(chip).join("") || "<span class='chip'>None detected</span>";
   setStatus(`Analyzed ${latestAnalysis.keywords.length} ATS keywords.`);
@@ -1463,6 +1493,7 @@ elements.buildKnowledge.addEventListener("click", () =>
     showToast("Knowledge base updated");
   }, elements.buildKnowledge),
 );
+elements.clearKnowledge.addEventListener("click", clearKnowledgeBase);
 elements.analyzeButton.addEventListener("click", () =>
   guarded(analyzeJob, elements.analyzeButton),
 );
@@ -1496,4 +1527,5 @@ window.addEventListener("afterprint", clearPrintResume);
 window.addEventListener("scroll", syncTopBannerState, { passive: true });
 
 restoreSessionState();
+if (!latestAnalysis) resetAnalysisPreview();
 syncTopBannerState();

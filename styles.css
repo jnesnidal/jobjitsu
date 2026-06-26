@@ -536,6 +536,12 @@ select:focus {
   font-size: 0.85rem;
 }
 
+#clearKnowledge {
+  font-size: inherit;
+  letter-spacing: inherit;
+  font-weight: inherit;
+}
+
 .ghost-button {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -658,6 +664,10 @@ button:disabled {
   font-weight: 800;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.chip-placeholder {
+  opacity: 0.45;
 }
 
 .chip.exact {
