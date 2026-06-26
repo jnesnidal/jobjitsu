@@ -32,6 +32,13 @@ const elements = {
   toast: document.querySelector("#toast"),
 };
 
+const heroHeroText = document.querySelector(".hero > div:first-child");
+const heroCard = document.querySelector(".hero-card");
+const openAiPanel = document.querySelector(".control-panel .panel-block:first-child");
+const atsScoreCard = document.querySelector(".scoreboard article:first-child");
+const skillsBox = document.querySelector(".keyword-board");
+const previewToolbar = document.querySelector(".preview-toolbar");
+
 const storageKeys = {
   apiKey: "resumejitsu-openai-key",
   knowledgeBase: "resumejitsu-knowledge-base",
@@ -44,6 +51,8 @@ let knowledgeBase = null;
 let latestAnalysis = null;
 let latestTailoredResume = null;
 let fitTimer = null;
+let heroHeightTimer = null;
+let openAiHeightTimer = null;
 
 const schemaStringArray = {
   type: "array",
@@ -675,7 +684,6 @@ async function buildKnowledgeBase() {
 
 function resetAnalysisPreview() {
   latestAnalysis = null;
-  elements.heroScore.textContent = "0%";
   elements.atsScore.textContent = "0%";
   elements.exactCount.textContent = "0";
   elements.closeCount.textContent = "0";
@@ -923,7 +931,6 @@ function renderAnalysis() {
   const close = latestAnalysis.keywords.filter((keyword) => keyword.status === "close");
   const missing = latestAnalysis.keywords.filter((keyword) => keyword.status === "missing");
 
-  elements.heroScore.textContent = `${latestAnalysis.score}%`;
   elements.atsScore.textContent = `${latestAnalysis.score}%`;
   elements.exactCount.textContent = exact.length;
   elements.closeCount.textContent = close.length;
@@ -1458,6 +1465,35 @@ function syncTopBannerState() {
   topBanner.classList.toggle("is-compact", window.scrollY > 16);
 }
 
+function syncHeroCardHeight() {
+  if (!heroHeroText || !heroCard) return;
+  heroCard.style.setProperty(
+    "--hero-heading-height",
+    `${Math.ceil(heroHeroText.getBoundingClientRect().height)}px`,
+  );
+}
+
+function scheduleHeroCardHeightSync() {
+  window.cancelAnimationFrame(heroHeightTimer);
+  heroHeightTimer = window.requestAnimationFrame(syncHeroCardHeight);
+}
+
+function syncOpenAiPanelHeight() {
+  if (!openAiPanel || !atsScoreCard || !skillsBox || !previewToolbar) return;
+  const totalHeight =
+    atsScoreCard.getBoundingClientRect().height +
+    14 +
+    skillsBox.getBoundingClientRect().height +
+    14 +
+    previewToolbar.getBoundingClientRect().height;
+  openAiPanel.style.setProperty("--openai-panel-height", `${Math.ceil(totalHeight)}px`);
+}
+
+function scheduleOpenAiPanelHeightSync() {
+  window.cancelAnimationFrame(openAiHeightTimer);
+  openAiHeightTimer = window.requestAnimationFrame(syncOpenAiPanelHeight);
+}
+
 function stripEditableAttributes(node) {
   if (node.nodeType !== Node.ELEMENT_NODE) return;
   node.removeAttribute("contenteditable");
@@ -1525,7 +1561,23 @@ elements.printButton.addEventListener("click", () => {
 window.addEventListener("beforeprint", preparePrintResume);
 window.addEventListener("afterprint", clearPrintResume);
 window.addEventListener("scroll", syncTopBannerState, { passive: true });
+window.addEventListener("resize", scheduleHeroCardHeightSync, { passive: true });
+window.addEventListener("resize", scheduleOpenAiPanelHeightSync, { passive: true });
 
 restoreSessionState();
 if (!latestAnalysis) resetAnalysisPreview();
 syncTopBannerState();
+scheduleHeroCardHeightSync();
+scheduleOpenAiPanelHeightSync();
+if (document.fonts?.ready) {
+  document.fonts.ready.then(scheduleHeroCardHeightSync);
+  document.fonts.ready.then(scheduleOpenAiPanelHeightSync);
+}
+if (window.ResizeObserver) {
+  const heroObserver = heroHeroText ? new ResizeObserver(scheduleHeroCardHeightSync) : null;
+  if (heroObserver && heroHeroText) heroObserver.observe(heroHeroText);
+  const openAiObserver = new ResizeObserver(scheduleOpenAiPanelHeightSync);
+  [atsScoreCard, skillsBox, previewToolbar].forEach((element) => {
+    if (element) openAiObserver.observe(element);
+  });
+}

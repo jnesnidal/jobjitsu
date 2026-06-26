@@ -58,14 +58,16 @@ button {
   width: min(1500px, calc(100vw - 28px));
   margin: 0 auto;
   padding: 92px 0 42px;
+  --workspace-width: calc(min(1500px, calc(100vw - 28px)) - 420px - 22px);
+  --hero-card-width: calc((var(--workspace-width) - 28px) / 3);
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
-  gap: 22px;
-  align-items: stretch;
-  margin-bottom: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--hero-card-width));
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 14px;
 }
 
 .top-banner {
@@ -234,9 +236,13 @@ h1 {
 .hero-card {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
-  min-height: 240px;
+  height: var(--hero-heading-height, auto);
+  min-height: 0;
   padding: 26px;
+  align-self: start;
+  overflow: hidden;
 }
 
 .hero-card::before,
@@ -280,7 +286,7 @@ h1 {
   display: block;
   margin: 14px 0;
   font-family: var(--display-font);
-  font-size: 4.5rem;
+  font-size: 3.55rem;
   line-height: 1;
   color: var(--success);
   letter-spacing: -0.03em;
@@ -288,8 +294,13 @@ h1 {
 }
 
 .hero-card small {
+  display: block;
+  width: 100%;
   color: var(--muted);
+  font-size: 0.92rem;
   line-height: 1.5;
+  text-align: left;
+  text-wrap: balance;
 }
 
 .grid {
@@ -300,12 +311,17 @@ h1 {
 
 .control-panel {
   display: grid;
-  gap: 16px;
+  gap: 14px;
   align-content: start;
 }
 
 .panel-block {
   padding: 18px;
+}
+
+.control-panel .panel-block:first-child {
+  height: var(--openai-panel-height, auto);
+  min-height: 0;
 }
 
 .block-heading {
