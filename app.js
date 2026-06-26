@@ -25,7 +25,9 @@ const elements = {
   refitButton: document.querySelector("#refitButton"),
   copyButton: document.querySelector("#copyButton"),
   downloadButton: document.querySelector("#downloadButton"),
+  pdfButton: document.querySelector("#pdfButton"),
   printButton: document.querySelector("#printButton"),
+  printRoot: document.querySelector("#printRoot"),
   toast: document.querySelector("#toast"),
 };
 
@@ -1134,6 +1136,316 @@ function plainResumeText() {
   return elements.resumePreview.innerText.replace(/\n{3,}/g, "\n\n").trim();
 }
 
+function normalizePdfText(value) {
+  return String(value || "")
+    .replace(/\u2018|\u2019/g, "'")
+    .replace(/\u201c|\u201d/g, '"')
+    .replace(/\u2013|\u2014/g, "-")
+    .replace(/\u2022/g, "-")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[^\x20-\x7e]/g, "");
+}
+
+function escapePdfText(value) {
+  return normalizePdfText(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
+}
+
+function getPdfFontName(style) {
+  const weight = Number.parseInt(style.fontWeight, 10);
+  if (style.fontStyle === "italic") return "F3";
+  if (Number.isFinite(weight) && weight >= 700) return "F2";
+  return "F1";
+}
+
+function getMeasureContext() {
+  const canvas = getMeasureContext.canvas || document.createElement("canvas");
+  getMeasureContext.canvas = canvas;
+  return canvas.getContext("2d");
+}
+
+function buildPdfDocument(stream) {
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R /F3 6 0 R >> >> /Contents 7 0 R >>",
+    "<< /Type /Font /Subtype /TrueType /BaseFont /Georgia /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /TrueType /BaseFont /Georgia-Bold /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /TrueType /BaseFont /Georgia-Italic /Encoding /WinAnsiEncoding >>",
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  return pdf;
+}
+
+function parseCssColor(value, fallback = [0, 0, 0]) {
+  const match = String(value || "").match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+  if (!match) return fallback;
+  return [Number(match[1]) / 255, Number(match[2]) / 255, Number(match[3]) / 255];
+}
+
+function drawPdfText(commands, text, x, y, fontName, fontSize, color = [0, 0, 0]) {
+  const safeText = escapePdfText(text);
+  if (!safeText) return;
+  commands.push(
+    `BT /${fontName} ${fontSize.toFixed(2)} Tf ${color.map((channel) => channel.toFixed(3)).join(" ")} rg 1 0 0 1 ${x.toFixed(2)} ${y.toFixed(2)} Tm (${safeText}) Tj ET`,
+  );
+}
+
+function drawPdfLine(commands, x1, y1, x2, y2, width = 0.7, color = [0, 0, 0]) {
+  commands.push(
+    `${width.toFixed(2)} w ${color.map((channel) => channel.toFixed(3)).join(" ")} RG ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S`,
+  );
+}
+
+function drawPdfRect(commands, x, y, width, height, color) {
+  commands.push(
+    `${color.map((channel) => channel.toFixed(3)).join(" ")} rg ${x.toFixed(2)} ${y.toFixed(2)} ${width.toFixed(2)} ${height.toFixed(2)} re f`,
+  );
+}
+
+function drawPdfCircle(commands, x, y, radius, color = [0, 0, 0]) {
+  const control = radius * 0.5522847498;
+  commands.push(
+    `${color.map((channel) => channel.toFixed(3)).join(" ")} rg ` +
+      `${(x + radius).toFixed(2)} ${y.toFixed(2)} m ` +
+      `${(x + radius).toFixed(2)} ${(y + control).toFixed(2)} ${(x + control).toFixed(2)} ${(y + radius).toFixed(2)} ${x.toFixed(2)} ${(y + radius).toFixed(2)} c ` +
+      `${(x - control).toFixed(2)} ${(y + radius).toFixed(2)} ${(x - radius).toFixed(2)} ${(y + control).toFixed(2)} ${(x - radius).toFixed(2)} ${y.toFixed(2)} c ` +
+      `${(x - radius).toFixed(2)} ${(y - control).toFixed(2)} ${(x - control).toFixed(2)} ${(y - radius).toFixed(2)} ${x.toFixed(2)} ${(y - radius).toFixed(2)} c ` +
+      `${(x + control).toFixed(2)} ${(y - radius).toFixed(2)} ${(x + radius).toFixed(2)} ${(y - control).toFixed(2)} ${(x + radius).toFixed(2)} ${y.toFixed(2)} c f`,
+  );
+}
+
+function transformPdfWord(word, style) {
+  if (style.textTransform === "uppercase") return word.toUpperCase();
+  if (style.textTransform === "lowercase") return word.toLowerCase();
+  if (style.textTransform === "capitalize") {
+    return word.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+  return word;
+}
+
+function getPdfStyleKey(style) {
+  return [
+    getPdfFontName(style),
+    style.fontSize,
+    style.fontStyle,
+    style.fontWeight,
+    style.color,
+  ].join("|");
+}
+
+function groupPdfLineRuns(words) {
+  const runs = [];
+  words.forEach((word) => {
+    const key = getPdfStyleKey(word.style);
+    const currentRun = runs[runs.length - 1];
+    if (currentRun && currentRun.key === key) {
+      currentRun.words.push(word);
+      return;
+    }
+    runs.push({ key, words: [word] });
+  });
+  return runs;
+}
+
+function addPdfRenderedWords(commands, element, paperRect, scaleX, scaleY) {
+  const renderedWords = [];
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const text = node.nodeValue || "";
+    const parent = node.parentElement;
+    if (!parent || !text.trim()) continue;
+
+    const style = window.getComputedStyle(parent);
+    const range = document.createRange();
+    const words = text.matchAll(/\S+/g);
+    for (const match of words) {
+      range.setStart(node, match.index);
+      range.setEnd(node, match.index + match[0].length);
+      [...range.getClientRects()]
+        .filter((rect) => rect.width > 0 && rect.height > 0)
+        .forEach((rect) => {
+          renderedWords.push({
+            text: transformPdfWord(match[0], style),
+            top: Math.round(rect.top),
+            left: rect.left,
+            rect,
+            style,
+          });
+        });
+    }
+    range.detach();
+  }
+
+  const lines = new Map();
+  renderedWords.forEach((word) => {
+    if (!lines.has(word.top)) lines.set(word.top, []);
+    lines.get(word.top).push(word);
+  });
+
+  [...lines.entries()]
+    .sort(([topA], [topB]) => topA - topB)
+    .forEach(([, words], lineIndex) => {
+      const sortedWords = words.sort((a, b) => a.left - b.left);
+      if (element.tagName === "LI" && lineIndex === 0) {
+        const firstWord = sortedWords[0];
+        const listStyle = window.getComputedStyle(element);
+        const fontSizePx = Number.parseFloat(listStyle.fontSize);
+        const fontSizePt = Math.max(5.5, fontSizePx * scaleY);
+        const y = 792 - (firstWord.rect.top - paperRect.top + fontSizePx * 0.82) * scaleY;
+        const bulletX = (element.getBoundingClientRect().left - paperRect.left - 6) * scaleX;
+        const bulletY = y + fontSizePt * 0.33;
+        drawPdfCircle(commands, bulletX, bulletY, Math.max(1.15, fontSizePt * 0.16), parseCssColor(listStyle.color));
+      }
+
+      groupPdfLineRuns(sortedWords).forEach((run) => {
+        const firstWord = run.words[0];
+        const style = firstWord.style;
+        const fontSizePx = Number.parseFloat(style.fontSize);
+        const fontSizePt = Math.max(5.5, fontSizePx * scaleY);
+        const text = run.words.map((word) => word.text).join(" ");
+        const x = Math.max(0, (firstWord.rect.left - paperRect.left) * scaleX);
+        const y = 792 - (firstWord.rect.top - paperRect.top + fontSizePx * 0.82) * scaleY;
+        const context = getMeasureContext();
+        context.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const elementRect = element.getBoundingClientRect();
+        const availableWidth = Math.max(20, (elementRect.right - firstWord.rect.left) * scaleX);
+        const measuredWidth = context.measureText(text).width * scaleX;
+        const fitRatio = measuredWidth > availableWidth ? Math.max(0.86, (availableWidth / measuredWidth) * 0.98) : 1;
+        drawPdfText(commands, text, x, y, getPdfFontName(style), fontSizePt * fitRatio, parseCssColor(style.color));
+      });
+    });
+}
+
+function createSelectablePdfBlob() {
+  fitResumeToPage();
+  const paper = elements.resumePreview;
+  const paperRect = paper.getBoundingClientRect();
+  const scaleX = 612 / paperRect.width;
+  const scaleY = 792 / paperRect.height;
+  const commands = [];
+  drawPdfRect(commands, 0, 0, 612, 792, parseCssColor(window.getComputedStyle(paper).backgroundColor, [1, 0.992, 0.973]));
+  const selectors = [
+    ".resume-header h2",
+    ".resume-contact",
+    ".resume-section h3",
+    ".summary",
+    ".skills-line",
+    ".entry-head span",
+    ".entry-subhead span",
+    "li",
+    ".empty-state",
+  ].join(", ");
+
+  paper.querySelectorAll(selectors).forEach((element) => {
+    if (!element.innerText.trim()) return;
+    addPdfRenderedWords(commands, element, paperRect, scaleX, scaleY);
+  });
+
+  paper.querySelectorAll(".resume-header, .resume-section h3").forEach((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+    const x1 = (rect.left - paperRect.left) * scaleX;
+    const x2 = (rect.right - paperRect.left) * scaleX;
+    const y = 792 - (rect.bottom - paperRect.top) * scaleY;
+    drawPdfLine(commands, x1, y, x2, y, element.classList.contains("resume-header") ? 1.1 : 0.7, parseCssColor(style.borderBottomColor));
+  });
+
+  const pdf = buildPdfDocument(commands.join("\n"));
+  return new Blob([pdf], { type: "application/pdf" });
+}
+
+function downloadBlob(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function ensureFileExtension(filename, extension) {
+  const cleanName = String(filename || "").trim().replace(/[<>:"/\\|?*\x00-\x1f]/g, "-");
+  if (!cleanName) return "";
+  return cleanName.toLowerCase().endsWith(extension) ? cleanName : `${cleanName}${extension}`;
+}
+
+async function savePdfWithNamePrompt(blob) {
+  const suggestedName = "JobJitsu-resume-tailoring-dojo.pdf";
+
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName,
+        types: [
+          {
+            description: "PDF document",
+            accept: { "application/pdf": [".pdf"] },
+          },
+        ],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return true;
+    } catch (error) {
+      if (error.name === "AbortError") return false;
+      throw error;
+    }
+  }
+
+  const filename = ensureFileExtension(window.prompt("Name this PDF file:", suggestedName), ".pdf");
+  if (!filename) return false;
+  downloadBlob(blob, filename);
+  return true;
+}
+
+function clearPrintResume() {
+  elements.printRoot.replaceChildren();
+  elements.printRoot.setAttribute("aria-hidden", "true");
+}
+
+function syncTopBannerState() {
+  const topBanner = document.querySelector(".top-banner");
+  if (!topBanner) return;
+  topBanner.classList.toggle("is-compact", window.scrollY > 16);
+}
+
+function stripEditableAttributes(node) {
+  if (node.nodeType !== Node.ELEMENT_NODE) return;
+  node.removeAttribute("contenteditable");
+  node.removeAttribute("spellcheck");
+  node.removeAttribute("aria-label");
+  node.removeAttribute("id");
+  [...node.children].forEach(stripEditableAttributes);
+}
+
+function preparePrintResume() {
+  fitResumeToPage();
+  const clone = elements.resumePreview.cloneNode(true);
+  stripEditableAttributes(clone);
+  clone.classList.add("print-paper");
+  elements.printRoot.replaceChildren(clone);
+  elements.printRoot.setAttribute("aria-hidden", "false");
+}
+
 elements.toggleKey.addEventListener("click", () => {
   const showing = elements.apiKey.type === "text";
   elements.apiKey.type = showing ? "password" : "text";
@@ -1165,15 +1477,23 @@ elements.copyButton.addEventListener("click", async () => {
 });
 elements.downloadButton.addEventListener("click", () => {
   const blob = new Blob([plainResumeText()], { type: "text/plain;charset=utf-8" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "Resumejitsu-tailored-resume.txt";
-  link.click();
-  URL.revokeObjectURL(link.href);
+  downloadBlob(blob, "JobJitsu-resume-tailoring-dojo.txt");
+});
+elements.pdfButton.addEventListener("click", async () => {
+  try {
+    const saved = await savePdfWithNamePrompt(createSelectablePdfBlob());
+    if (saved) showToast("Selectable PDF saved");
+  } catch (error) {
+    showToast(error.message);
+  }
 });
 elements.printButton.addEventListener("click", () => {
-  fitResumeToPage();
+  preparePrintResume();
   window.print();
 });
+window.addEventListener("beforeprint", preparePrintResume);
+window.addEventListener("afterprint", clearPrintResume);
+window.addEventListener("scroll", syncTopBannerState, { passive: true });
 
 restoreSessionState();
+syncTopBannerState();

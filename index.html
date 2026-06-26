@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="ResumeJitsu turns an uploaded resume and pasted job description into an editable, ATS-focused one-page resume."
+      content="JobJitsu - Resume Tailoring Dojo turns an uploaded resume and pasted job description into an editable, ATS-focused one-page resume."
     />
-    <title>ResumeJitsu</title>
-    <link rel="stylesheet" href="styles.css?v=20260625-3" />
+    <title>JobJitsu - Resume Tailoring Dojo</title>
+    <link rel="stylesheet" href="styles.css?v=20260625-5" />
   </head>
   <body>
+    <div class="top-banner">
+      <p class="eyebrow">JobJitsu - Resume Tailoring Dojo</p>
+    </div>
     <main class="shell">
       <section class="hero">
         <div>
-          <p class="eyebrow">ResumeJitsu / ATS tailoring dojo</p>
           <h1>Turn your resume into a precise keyword strike.</h1>
           <p class="hero-copy">
             Upload your current resume, add extra context, paste a job description,
@@ -160,9 +162,10 @@
               <button id="refitButton" type="button" class="ghost-button">Refit page</button>
               <button id="copyButton" type="button" class="ghost-button">Copy text</button>
               <button id="downloadButton" type="button" class="ghost-button">Download .txt</button>
-              <button id="printButton" type="button" class="primary-button compact">
-                Print / save PDF
+              <button id="pdfButton" type="button" class="primary-button compact">
+                Download selectable PDF
               </button>
+              <button id="printButton" type="button" class="ghost-button">Browser print</button>
             </div>
           </div>
 
@@ -185,6 +188,7 @@
     </main>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="app.js?v=20260625-5"></script>
+    <div id="printRoot" aria-hidden="true"></div>
+    <script src="app.js?v=20260625-9"></script>
   </body>
 </html>
