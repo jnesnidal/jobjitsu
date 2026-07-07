@@ -793,7 +793,6 @@ button:disabled {
   font-size: 22pt;
   line-height: 1;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
 }
 
 .resume-contact {
